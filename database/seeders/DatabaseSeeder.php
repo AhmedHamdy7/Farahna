@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Enums\PlanType;
+use App\Enums\TemplateType;
 use App\Enums\UserRole;
 use App\Models\Plan;
+use App\Models\Template;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -15,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->createAdminUser();
         $this->createPlans();
+        $this->createTemplates();
     }
 
     private function createAdminUser(): void
@@ -76,6 +79,40 @@ class DatabaseSeeder extends Seeder
 
         foreach ($plans as $plan) {
             Plan::firstOrCreate(['name' => $plan['name']], $plan);
+        }
+    }
+
+    private function createTemplates(): void
+    {
+        $freePlan    = Plan::where('name', 'Free')->first();
+        $premiumPlan = Plan::where('name', 'Premium')->first();
+
+        if ($freePlan) {
+            Template::firstOrCreate(
+                ['slug' => 'elegant-gold'],
+                [
+                    'name'          => 'Elegant Gold',
+                    'type'          => TemplateType::Static,
+                    'slug'          => 'elegant-gold',
+                    'plan_id'       => $freePlan->id,
+                    'config_schema' => null,
+                    'is_active'     => true,
+                ]
+            );
+        }
+
+        if ($premiumPlan) {
+            Template::firstOrCreate(
+                ['slug' => 'romantic-scroll'],
+                [
+                    'name'          => 'Romantic Scroll',
+                    'type'          => TemplateType::Website,
+                    'slug'          => 'romantic-scroll',
+                    'plan_id'       => $premiumPlan->id,
+                    'config_schema' => null,
+                    'is_active'     => true,
+                ]
+            );
         }
     }
 }

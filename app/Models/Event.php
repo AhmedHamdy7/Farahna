@@ -71,6 +71,16 @@ class Event extends Model
         return $this->hasMany(RsvpResponse::class)->latest();
     }
 
+    public function invitationUrl(): string
+    {
+        if ($this->subdomain && app()->isProduction()) {
+            $host = parse_url(config('app.url'), PHP_URL_HOST);
+            return 'https://' . $this->subdomain . '.' . $host;
+        }
+
+        return route('invitation.show', $this);
+    }
+
     public function coupleName(): string
     {
         return "{$this->groom_name} & {$this->bride_name}";

@@ -1,0 +1,230 @@
+<div>
+    {{-- ─── Wizard Header ─── --}}
+    <div style="background:#fff; border-bottom:1px solid #e7e5e4; padding:1.5rem;">
+        <div style="max-width:700px; margin:0 auto;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:.75rem;">
+                <h1 style="font-family:'Playfair Display',serif; font-size:1.4rem; color:#e11d48;">إنشاء دعوتك ♥</h1>
+                <span style="color:#78716c; font-size:.875rem;">الخطوة {{ $step }} من {{ $totalSteps }}</span>
+            </div>
+
+            {{-- Progress Steps --}}
+            <div style="display:flex; gap:.5rem; align-items:center;">
+                @foreach (['اختر الباقة', 'اختر القالب', 'تفاصيل الحفل', 'النشر'] as $i => $label)
+                    @php $num = $i + 1; @endphp
+                    <div wire:click="goToStep({{ $num }})"
+                         style="display:flex; align-items:center; gap:.4rem; cursor:{{ $num < $step ? 'pointer' : 'default' }}; flex:1;">
+                        <div style="
+                            width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+                            font-size:.8rem; font-weight:600; flex-shrink:0;
+                            background:{{ $step > $num ? '#e11d48' : ($step === $num ? '#fff1f2' : '#f5f5f4') }};
+                            color:{{ $step > $num ? '#fff' : ($step === $num ? '#e11d48' : '#a8a29e') }};
+                            border:2px solid {{ $step >= $num ? '#e11d48' : '#e7e5e4' }};
+                        ">
+                            @if($step > $num) ✓ @else {{ $num }} @endif
+                        </div>
+                        <span style="font-size:.8rem; color:{{ $step === $num ? '#e11d48' : '#78716c' }}; white-space:nowrap;">
+                            {{ $label }}
+                        </span>
+                        @if($i < 3)
+                            <div style="flex:1; height:2px; background:{{ $step > $num ? '#e11d48' : '#e7e5e4' }}; margin:0 .25rem;"></div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    {{-- ─── Step Content ─── --}}
+    <div style="max-width:700px; margin:2rem auto; padding:0 1.5rem;">
+
+        {{-- STEP 1: Choose Plan --}}
+        @if($step === 1)
+            <h2 style="font-size:1.2rem; font-weight:700; margin-bottom:1.5rem;">اختر الباقة المناسبة</h2>
+
+            @error('selectedPlanId')
+                <div class="alert-error">{{ $message }}</div>
+            @enderror
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:1rem;">
+                @foreach($this->plans as $plan)
+                    <div wire:click="selectPlan({{ $plan->id }})"
+                         style="
+                            padding:1.5rem; border-radius:12px; cursor:pointer; transition:all .2s;
+                            border:2px solid {{ $selectedPlanId === $plan->id ? '#e11d48' : '#e7e5e4' }};
+                            background:{{ $selectedPlanId === $plan->id ? '#fff1f2' : '#fff' }};
+                         ">
+                        <div style="font-size:1.5rem; margin-bottom:.75rem;">
+                            {{ $plan->isFree() ? '🆓' : ($plan->price <= 200 ? '⭐' : '👑') }}
+                        </div>
+                        <h3 style="font-weight:700; margin-bottom:.25rem;">{{ $plan->name }}</h3>
+                        <p style="font-size:1.2rem; color:#e11d48; font-weight:700; margin-bottom:.75rem;">
+                            {{ $plan->isFree() ? 'مجاني' : number_format($plan->price) . ' ج.م' }}
+                        </p>
+                        @if($plan->features)
+                            <ul style="list-style:none; font-size:.8rem; color:#78716c; line-height:1.8;">
+                                @foreach($plan->features as $key => $val)
+                                    <li>{{ $val === 'true' ? '✓' : '✗' }} {{ str_replace('_', ' ', $key) }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+
+        {{-- STEP 2: Choose Template --}}
+        @elseif($step === 2)
+            <h2 style="font-size:1.2rem; font-weight:700; margin-bottom:1.5rem;">اختر القالب</h2>
+
+            @error('selectedTemplateId')
+                <div class="alert-error">{{ $message }}</div>
+            @enderror
+
+            @if($this->templates->isEmpty())
+                <div style="text-align:center; padding:3rem; color:#78716c;">
+                    <div style="font-size:3rem; margin-bottom:1rem;">🎨</div>
+                    <p>لا توجد قوالب متاحة لهذه الباقة حتى الآن.</p>
+                </div>
+            @else
+                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:1rem;">
+                    @foreach($this->templates as $template)
+                        <div wire:click="selectTemplate({{ $template->id }})"
+                             style="
+                                border-radius:12px; overflow:hidden; cursor:pointer; transition:all .2s;
+                                border:3px solid {{ $selectedTemplateId === $template->id ? '#e11d48' : '#e7e5e4' }};
+                             ">
+                            <div style="height:140px; background:linear-gradient(135deg,#fff1f2,#fce7f3); display:flex; align-items:center; justify-content:center;">
+                                @if($template->thumbnail)
+                                    <img src="{{ Storage::url($template->thumbnail) }}" style="width:100%;height:100%;object-fit:cover;">
+                                @else
+                                    <span style="font-size:3rem;">💌</span>
+                                @endif
+                            </div>
+                            <div style="padding:.75rem; background:#fff;">
+                                <p style="font-weight:600; font-size:.9rem;">{{ $template->name }}</p>
+                                <span style="font-size:.75rem; color:#78716c;">{{ $template->type->label() }}</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+        {{-- STEP 3: Event Details --}}
+        @elseif($step === 3)
+            <h2 style="font-size:1.2rem; font-weight:700; margin-bottom:1.5rem;">تفاصيل الحفل</h2>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                    <label class="form-label">اسم العريس</label>
+                    <input type="text" class="form-input" wire:model="groomName" placeholder="مثال: أحمد">
+                    @error('groomName') <p class="form-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">اسم العروسة</label>
+                    <input type="text" class="form-input" wire:model="brideName" placeholder="مثال: سارة">
+                    @error('brideName') <p class="form-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">تاريخ الحفل</label>
+                    <input type="date" class="form-input" wire:model="eventDate">
+                    @error('eventDate') <p class="form-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">وقت الحفل</label>
+                    <input type="time" class="form-input" wire:model="eventTime">
+                </div>
+
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label class="form-label">اسم القاعة / الفندق</label>
+                    <input type="text" class="form-input" wire:model="venueName" placeholder="مثال: قاعة الأميرة - فندق الشيراتون">
+                    @error('venueName') <p class="form-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label class="form-label">العنوان <span style="color:#a8a29e;">(اختياري)</span></label>
+                    <input type="text" class="form-input" wire:model="venueAddress" placeholder="العنوان التفصيلي">
+                </div>
+
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label class="form-label">رابط الخريطة <span style="color:#a8a29e;">(اختياري)</span></label>
+                    <input type="url" class="form-input" wire:model="venueMapLink" placeholder="https://maps.google.com/...">
+                </div>
+            </div>
+
+        {{-- STEP 4: Publish Settings --}}
+        @elseif($step === 4)
+            <h2 style="font-size:1.2rem; font-weight:700; margin-bottom:1.5rem;">إعدادات النشر</h2>
+
+            <div class="card" style="margin-bottom:1rem;">
+                <h3 style="font-weight:600; margin-bottom:1rem; color:#44403c;">الرابط</h3>
+                <div class="form-group">
+                    <label class="form-label">
+                        Subdomain
+                        <span style="color:#a8a29e; font-size:.8rem;">(فقط للباقات المدفوعة)</span>
+                    </label>
+                    <div style="display:flex; align-items:center; gap:.5rem;">
+                        <input type="text" class="form-input" wire:model.live="subdomain"
+                               placeholder="ahmed-and-sara"
+                               style="flex:1;"
+                               {{ $this->selectedPlan?->isFree() ? 'disabled' : '' }}>
+                        <span style="color:#78716c; font-size:.875rem; white-space:nowrap;">.{{ parse_url(config('app.url'), PHP_URL_HOST) }}</span>
+                    </div>
+                    @error('subdomain') <p class="form-error">{{ $message }}</p> @enderror
+                    @if($subdomain)
+                        <p style="margin-top:.4rem; font-size:.8rem; color:#16a34a;">
+                            ✓ سيكون رابطك: <strong>{{ $subdomain }}.{{ parse_url(config('app.url'), PHP_URL_HOST) }}</strong>
+                        </p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom:1rem;">
+                <h3 style="font-weight:600; margin-bottom:1rem; color:#44403c;">حماية بكلمة مرور</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label class="form-label">كلمة المرور <span style="color:#a8a29e;">(اختياري)</span></label>
+                        <input type="password" class="form-input" wire:model="password" placeholder="اتركها فارغة إذا لا تريد">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">تلميح</label>
+                        <input type="text" class="form-input" wire:model="passwordHint" placeholder="مثال: اسم قاعة الحفل">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <label style="display:flex; align-items:center; gap:.75rem; cursor:pointer;">
+                    <input type="checkbox" wire:model="isPublished" style="width:18px; height:18px;">
+                    <div>
+                        <p style="font-weight:600;">نشر الدعوة الآن</p>
+                        <p style="font-size:.8rem; color:#78716c;">اتركها غير محددة إذا أردت المراجعة أولاً</p>
+                    </div>
+                </label>
+            </div>
+        @endif
+
+        {{-- ─── Navigation Buttons ─── --}}
+        <div style="display:flex; justify-content:space-between; margin-top:2rem; padding-top:1.5rem; border-top:1px solid #e7e5e4;">
+            @if($step > 1)
+                <button wire:click="prevStep" class="btn btn-outline">
+                    → رجوع
+                </button>
+            @else
+                <div></div>
+            @endif
+
+            @if($step < $totalSteps)
+                <button wire:click="nextStep" class="btn btn-primary">
+                    التالي ←
+                </button>
+            @else
+                <button wire:click="submit" class="btn btn-primary">
+                    💌 إنشاء الدعوة
+                </button>
+            @endif
+        </div>
+
+    </div>
+</div>

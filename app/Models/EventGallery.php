@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventGallery extends Model
 {
+    protected $table = 'event_gallery';
+
     protected $fillable = [
         'event_id',
         'image_path',
