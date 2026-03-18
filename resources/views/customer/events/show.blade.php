@@ -10,6 +10,12 @@
         ← رجوع للأحداث
     </a>
 
+    @if(session('success'))
+        <div style="background:#dcfce7; border:1px solid #bbf7d0; color:#166534; padding:1rem 1.25rem; border-radius:10px; margin-bottom:1.25rem; font-size:.9rem;">
+            {{ session('success') }}
+        </div>
+    @endif
+
     {{-- Header Card --}}
     <div class="card" style="margin-bottom:1.5rem;">
         <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
@@ -31,6 +37,10 @@
             ">
                 {{ $event->is_published ? '✓ منشور' : '○ مسودة' }}
             </span>
+            <a href="{{ route('customer.events.edit', $event) }}"
+               class="btn btn-outline" style="font-size:.85rem; padding:.4rem 1rem;">
+                ✏️ تعديل
+            </a>
         </div>
     </div>
 
