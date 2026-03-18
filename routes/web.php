@@ -69,6 +69,8 @@ Route::middleware([CustomerMiddleware::class])
         Route::put('/events/{event}',                       [EventController::class, 'update'])->name('events.update');
         Route::patch('/events/{event}/wishes/{wish}/approve', [EventController::class, 'approveWish'])->name('events.wishes.approve');
         Route::delete('/events/{event}/wishes/{wish}',       [EventController::class, 'deleteWish'])->name('events.wishes.delete');
+        Route::post('/events/{event}/gallery',               [\App\Http\Controllers\Customer\GalleryController::class, 'store'])->name('events.gallery.store');
+        Route::delete('/events/{event}/gallery/{gallery}',   [\App\Http\Controllers\Customer\GalleryController::class, 'destroy'])->name('events.gallery.destroy');
     });
 
 // ─── INVITATION (Subdomain) ───────────────────────────────────────────────────

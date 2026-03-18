@@ -267,17 +267,141 @@
         }
         .map-link:hover { background: #be123c; }
 
-        /* ─── GALLERY ─── */
-        .gallery-bg { background: #fff; }
+        /* ─── GALLERY CAROUSEL ─── */
+        .gallery-bg { background: linear-gradient(180deg, #fff 0%, #fdf8f0 100%); }
 
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1rem;
+        .gallery-carousel-wrap {
+            display: flex;
+            direction: ltr;
+            align-items: center;
+            gap: .75rem;
         }
-        .gallery-item { aspect-ratio: 1; border-radius: 12px; overflow: hidden; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
-        .gallery-item:hover img { transform: scale(1.05); }
+
+        /* Viewport — clips the sliding track */
+        .gallery-viewport {
+            flex: 1;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+
+        /* Sliding track — force LTR so translateX works correctly even on RTL pages */
+        .gallery-track {
+            display: flex;
+            direction: ltr;
+            gap: .6rem;
+            transition: transform .5s cubic-bezier(.4,0,.2,1);
+            will-change: transform;
+        }
+
+        /* Each card — fixed width calculated by JS */
+        .gallery-card {
+            flex-shrink: 0;
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 4px 16px rgba(0,0,0,.08);
+            transition: transform .3s, box-shadow .3s;
+        }
+        .gallery-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,.15);
+        }
+        .gallery-card-inner {
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+        .gallery-card img {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block;
+            transition: transform .45s ease;
+        }
+        .gallery-card:hover img { transform: scale(1.07); }
+
+        /* Rose overlay on hover */
+        .gallery-card::after {
+            content: '🔍';
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(225,29,72,.12);
+            opacity: 0;
+            transition: opacity .3s;
+        }
+        .gallery-card:hover::after { opacity: 1; }
+
+        /* Arrows */
+        .gallery-btn {
+            flex-shrink: 0;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            box-shadow: 0 4px 16px rgba(0,0,0,.12);
+            color: var(--dark); font-size: 1.3rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: background .2s, color .2s, transform .2s, box-shadow .2s;
+        }
+        .gallery-btn:hover {
+            background: var(--rose); color: #fff; border-color: var(--rose);
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(225,29,72,.3);
+        }
+        .gallery-btn:disabled { opacity: .25; pointer-events: none; }
+
+        /* Dots */
+        .gallery-dots {
+            display: flex; justify-content: center; gap: .4rem;
+            margin-top: 1rem;
+        }
+        .gallery-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--border); cursor: pointer;
+            transition: background .25s, transform .25s;
+        }
+        .gallery-dot.active {
+            background: var(--rose);
+            transform: scale(1.3);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed; inset: 0; z-index: 99999;
+            background: rgba(0,0,0,.92);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity .3s;
+        }
+        .lightbox.open { opacity: 1; pointer-events: all; }
+        .lightbox img {
+            max-width: 88vw; max-height: 85vh;
+            border-radius: 14px; object-fit: contain;
+            box-shadow: 0 24px 80px rgba(0,0,0,.5);
+        }
+        .lb-close {
+            position: absolute; top: 1rem; right: 1rem;
+            width: 42px; height: 42px; border-radius: 50%;
+            background: rgba(255,255,255,.15); color: #fff;
+            font-size: 1.2rem; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .2s;
+        }
+        .lb-close:hover { background: rgba(255,255,255,.3); }
+        .lb-arr {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 46px; height: 46px; border-radius: 50%;
+            background: rgba(255,255,255,.15); color: #fff;
+            font-size: 1.4rem; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .2s, transform .2s;
+        }
+        .lb-arr:hover { background: rgba(255,255,255,.28); transform: translateY(-50%) scale(1.1); }
+        .lb-arr.prev { left: 1rem; }
+        .lb-arr.next { right: 1rem; }
+        .lb-count {
+            position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);
+            color: rgba(255,255,255,.65); font-size: .78rem; letter-spacing: 1px;
+        }
 
         /* ─── RSVP ─── */
         .rsvp-bg { background: linear-gradient(135deg, #fff1f2, #fdf8f0); }
@@ -643,15 +767,35 @@
     <div class="section">
         <h2 class="section-title scroll-reveal">{{ __('invitation.gallery_title') }}</h2>
         <div class="section-divider scroll-reveal">✦</div>
-        <div class="gallery-grid">
-            @foreach($event->gallery as $photo)
-                <div class="gallery-item scroll-reveal">
-                    <img src="{{ Storage::url($photo->image_path) }}" alt="" loading="lazy">
+
+        <div class="gallery-carousel-wrap scroll-reveal">
+            <button class="gallery-btn gallery-btn-prev" id="gPrev" onclick="gShift(-1)">&#8249;</button>
+            <div class="gallery-viewport">
+                <div class="gallery-track" id="gTrack">
+                    @foreach($event->gallery as $i => $photo)
+                    <div class="gallery-card" onclick="lbOpen({{ $i }})">
+                        <div class="gallery-card-inner">
+                            <img src="{{ Storage::url($photo->image_path) }}" alt="" loading="lazy">
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
-            @endforeach
+            </div>
+            <button class="gallery-btn gallery-btn-next" id="gNext" onclick="gShift(1)">&#8250;</button>
         </div>
+
+        <div class="gallery-dots" id="gDots"></div>
     </div>
 </section>
+
+{{-- Lightbox --}}
+<div class="lightbox" id="lb" onclick="if(event.target===this)lbClose()">
+    <button class="lb-close" onclick="lbClose()">✕</button>
+    <button class="lb-arr prev" onclick="lbShift(-1)">&#8249;</button>
+    <img id="lbImg" src="" alt="">
+    <button class="lb-arr next" onclick="lbShift(1)">&#8250;</button>
+    <div class="lb-count"><span id="lbCur">1</span> / {{ $event->gallery->count() }}</div>
+</div>
 @endif
 
 {{-- ═══════════════════════════════════════════════
@@ -831,6 +975,107 @@
             c.appendChild(s);
         }
     })();
+
+    // ── Gallery Carousel + Lightbox ──
+    // Script is at bottom of body — DOM is already available, no need for DOMContentLoaded
+    (function() {
+        var track  = document.getElementById('gTrack');
+        var dotsEl = document.getElementById('gDots');
+        if (!track) return; // no gallery
+
+        var GAP    = 10;
+        var page   = 0;
+        var perPg  = 4;
+        var cardW  = 0;
+        var timer  = null;
+        var cards  = track.querySelectorAll('.gallery-card');
+        var total  = cards.length;
+
+        // collect image srcs for lightbox
+        window._lbImgs = Array.from(cards).map(function(c){ return c.querySelector('img').src; });
+        window._lbIdx  = 0;
+
+        function maxPage() { return Math.max(0, total - perPg); }
+
+        function render() {
+            track.style.transform = 'translateX(-' + (page * (cardW + GAP)) + 'px)';
+            var btnP = document.getElementById('gPrev');
+            var btnN = document.getElementById('gNext');
+            if (btnP) btnP.disabled = (page === 0);
+            if (btnN) btnN.disabled = (page >= maxPage());
+
+            if (!dotsEl) return;
+            var pages = Math.ceil(total / perPg);
+            var curDotPage = Math.floor(page / perPg);
+            dotsEl.innerHTML = '';
+            for (var p = 0; p < pages; p++) {
+                var d = document.createElement('span');
+                d.className = 'gallery-dot' + (p === curDotPage ? ' active' : '');
+                (function(target){ d.onclick = function(){ go(target * perPg); }; })(p);
+                dotsEl.appendChild(d);
+            }
+        }
+
+        function go(p) {
+            page = Math.max(0, Math.min(p, maxPage()));
+            render();
+            clearInterval(timer);
+            timer = setInterval(autoNext, 3200);
+        }
+
+        function autoNext() {
+            page = (page >= maxPage()) ? 0 : page + 1;
+            render();
+        }
+
+        function setup() {
+            var vw = track.parentElement.offsetWidth;
+            perPg  = vw < 420 ? 2 : vw < 640 ? 3 : 4;
+            cardW  = (vw - GAP * (perPg - 1)) / perPg;
+            cards.forEach(function(c){ c.style.width = cardW + 'px'; });
+            page = Math.min(page, maxPage());
+            render();
+        }
+
+        // Expose arrow function globally
+        window.gShift = function(dir) { go(page + dir); };
+
+        setup();
+        if (total > perPg) timer = setInterval(autoNext, 3200);
+        window.addEventListener('resize', setup);
+
+        // Touch swipe on track
+        var sx = 0;
+        track.addEventListener('touchstart', function(e){ sx = e.touches[0].clientX; }, {passive:true});
+        track.addEventListener('touchend',   function(e){
+            var dx = e.changedTouches[0].clientX - sx;
+            if (Math.abs(dx) > 40) window.gShift(dx < 0 ? 1 : -1);
+        });
+    })();
+
+    // Lightbox
+    function lbOpen(i) {
+        if (!window._lbImgs || !window._lbImgs.length) return;
+        window._lbIdx = i;
+        document.getElementById('lbImg').src = window._lbImgs[i];
+        document.getElementById('lbCur').textContent = i + 1;
+        document.getElementById('lb').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function lbClose() {
+        document.getElementById('lb').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    function lbShift(dir) {
+        lbOpen((_lb.idx + dir + _lb.imgs.length) % _lb.imgs.length);
+    }
+    document.addEventListener('keydown', function(e) {
+        if (document.getElementById('lb').classList.contains('open')) {
+            if (e.key === 'Escape')     lbClose();
+            if (e.key === 'ArrowRight') lbShift(1);
+            if (e.key === 'ArrowLeft')  lbShift(-1);
+        }
+    });
 
     // ── GSAP scroll-triggered reveals (enhancement only) ──
     window.addEventListener('load', function() {

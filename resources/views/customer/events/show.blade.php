@@ -205,6 +205,88 @@
                 @endif
             </div>
 
+            {{-- Gallery --}}
+            <div class="card" style="margin-bottom:1.5rem;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+                    <h2 style="font-weight:700;">🖼️ معرض الصور ({{ $event->gallery->count() }} / 20)</h2>
+                </div>
+
+                @if(session('gallery_success'))
+                    <div style="background:#dcfce7; border:1px solid #bbf7d0; color:#166534; padding:.75rem 1rem; border-radius:8px; margin-bottom:1rem; font-size:.875rem;">
+                        {{ session('gallery_success') }}
+                    </div>
+                @endif
+
+                @if($errors->hasBag('default') && $errors->has('photos'))
+                    <div style="background:#fff1f2; border:1px solid #fecdd3; color:#be123c; padding:.75rem 1rem; border-radius:8px; margin-bottom:1rem; font-size:.875rem;">
+                        @foreach($errors->get('photos.*') as $msgs)
+                            @foreach($msgs as $msg)<p>{{ $msg }}</p>@endforeach
+                        @endforeach
+                    </div>
+                @endif
+
+                {{-- Upload Form --}}
+                @if($event->gallery->count() < 20)
+                <form method="POST"
+                      action="{{ route('customer.events.gallery.store', $event) }}"
+                      enctype="multipart/form-data"
+                      id="galleryForm">
+                    @csrf
+                    <label for="photoInput" style="
+                        display:flex; flex-direction:column; align-items:center; justify-content:center;
+                        gap:.5rem; border:2px dashed #e7e5e4; border-radius:12px;
+                        padding:1.5rem; cursor:pointer; transition:all .2s;
+                        color:#78716c; font-size:.9rem; margin-bottom:1rem;
+                        background:#fafaf9;
+                    " onmouseover="this.style.borderColor='#e11d48';this.style.color='#e11d48'"
+                       onmouseout="this.style.borderColor='#e7e5e4';this.style.color='#78716c'">
+                        <span style="font-size:2rem;">📷</span>
+                        <span style="font-weight:600;">اضغط لاختيار الصور</span>
+                        <span style="font-size:.78rem;">JPG, PNG, WEBP · حتى 5 ميجا للصورة · حتى {{ 20 - $event->gallery->count() }} صورة</span>
+                    </label>
+                    <input type="file" id="photoInput" name="photos[]"
+                           accept="image/jpeg,image/png,image/webp"
+                           multiple style="display:none;"
+                           onchange="previewPhotos(this)">
+
+                    <div id="photoPreview" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:.5rem; margin-bottom:.75rem;"></div>
+
+                    <button type="submit" id="uploadBtn" style="display:none;"
+                            class="btn btn-primary" style="width:100%;">
+                        ⬆️ رفع الصور
+                    </button>
+                </form>
+                @endif
+
+                {{-- Existing Photos --}}
+                @if($event->gallery->isNotEmpty())
+                <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:.6rem; margin-top:.5rem;">
+                    @foreach($event->gallery as $photo)
+                    <div style="position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; group;">
+                        <img src="{{ Storage::url($photo->image_path) }}"
+                             alt="" style="width:100%; height:100%; object-fit:cover;">
+                        <form method="POST"
+                              action="{{ route('customer.events.gallery.destroy', [$event, $photo]) }}"
+                              onsubmit="return confirm('حذف هذه الصورة؟')"
+                              style="position:absolute; top:4px; left:4px;">
+                            @csrf @method('DELETE')
+                            <button type="submit" style="
+                                background:rgba(0,0,0,.6); color:#fff; border:none;
+                                border-radius:6px; width:26px; height:26px;
+                                font-size:.75rem; cursor:pointer; line-height:1;
+                            ">✕</button>
+                        </form>
+                    </div>
+                    @endforeach
+                </div>
+                @else
+                    @if($event->gallery->count() >= 20)
+                    @else
+                        <p style="text-align:center; color:#a8a29e; font-size:.85rem; padding:.5rem 0;">لم تُرفع صور بعد</p>
+                    @endif
+                @endif
+            </div>
+
         </div>
 
         {{-- Right Column --}}
@@ -242,4 +324,29 @@
     </div>
 
 </div>
+@push('scripts')
+<script>
+function previewPhotos(input) {
+    const preview = document.getElementById('photoPreview');
+    const btn     = document.getElementById('uploadBtn');
+    preview.innerHTML = '';
+    if (!input.files.length) { btn.style.display = 'none'; return; }
+
+    Array.from(input.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const div = document.createElement('div');
+            div.style.cssText = 'aspect-ratio:1;border-radius:8px;overflow:hidden;background:#f5f5f4;';
+            div.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+            preview.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    btn.style.display = 'inline-flex';
+    btn.textContent   = `⬆️ رفع ${input.files.length} صورة`;
+}
+</script>
+@endpush
+
 @endsection
