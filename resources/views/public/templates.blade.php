@@ -206,9 +206,15 @@
                         <a href="{{ route('templates.preview', $template) }}" class="btn btn-outline">
                             👁 {{ app()->isLocale('ar') ? 'معاينة' : 'Preview' }}
                         </a>
-                        <a href="{{ route('register') }}?template={{ $template->id }}" class="btn btn-primary">
-                            {{ app()->isLocale('ar') ? 'ابدأ الآن' : 'Use Template' }} →
-                        </a>
+                        @auth
+                            <a href="{{ route('customer.events.create') }}?template={{ $template->id }}" class="btn btn-primary">
+                                {{ app()->isLocale('ar') ? 'ابدأ الآن' : 'Use Template' }} →
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}?template={{ $template->id }}" class="btn btn-primary">
+                                {{ app()->isLocale('ar') ? 'ابدأ الآن' : 'Use Template' }} →
+                            </a>
+                        @endauth
                     </div>
                 </div>
             </div>

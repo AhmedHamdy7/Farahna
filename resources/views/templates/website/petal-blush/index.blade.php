@@ -27,6 +27,7 @@
     --muted:     #8a7080;
     --pb-accent:   #c9748a;
     --pb-btn-text: #fff;
+    --map-bg: #fff5f7; --map-text: #3d2235; --map-accent: #c9748a;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -621,6 +622,11 @@ body {
                     <button type="submit" name="status" value="attending" class="rsvp-choice yes">✅ بالتأكيد</button>
                     <button type="submit" name="status" value="declined" class="rsvp-choice no">🙏 معذرة</button>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">ملاحظات <span style="opacity:.6; font-size:.85em;">(اختياري)</span></label>
+                    <textarea name="notes" class="form-input" rows="2" placeholder="مثال: حساسية من المكسرات، قادمون من خارج المدينة..." style="resize:vertical; min-height:70px;">{{ old('notes') }}</textarea>
+                </div>
             </form>
         </div>
     </div>
@@ -711,5 +717,8 @@ body {
     @endif
 })();
 </script>
+@include('partials.venue-map')
+@include('partials.whatsapp-share')
+@include('partials.music-player')
 </body>
 </html>

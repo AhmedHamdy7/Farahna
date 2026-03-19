@@ -29,6 +29,7 @@
             --border:  rgba(124,58,237,.2);
             --pb-accent:   #7c3aed;
             --pb-btn-text: #fff;
+            --map-bg: #050520; --map-text: #e0d0ff; --map-accent: #7c3aed;
         }
 
         html { scroll-behavior:smooth; }
@@ -429,6 +430,11 @@
                     </select>
                 </div>
                 <div class="f-group"><label class="f-label">المرافقين</label><input type="number" name="guests_count" class="f-input" value="{{ old('guests_count',1) }}" min="1" max="20"></div>
+
+                <div class="form-group">
+                    <label class="form-label">ملاحظات <span style="opacity:.6; font-size:.85em;">(اختياري)</span></label>
+                    <textarea name="notes" class="form-input" rows="2" placeholder="مثال: حساسية من المكسرات، قادمون من خارج المدينة..." style="resize:vertical; min-height:70px;">{{ old('notes') }}</textarea>
+                </div>
             </div>
             <button type="submit" class="btn-cosmic">🌌 تأكيد الحضور</button>
         </form>
@@ -517,5 +523,8 @@ function lbOpen(i){if(!window._lbImgs||!window._lbImgs.length)return;window._lbI
 function lbNav(dir){if(!window._lbImgs)return;window._lbIdx=(window._lbIdx+dir+window._lbImgs.length)%window._lbImgs.length;document.getElementById('lbImg').src=window._lbImgs[window._lbIdx];document.getElementById('lbCur').textContent=window._lbIdx+1;}
 document.getElementById('lb').addEventListener('click',function(e){if(e.target===this){this.classList.remove('open');document.body.style.overflow='';}});
 </script>
+@include('partials.venue-map')
+@include('partials.whatsapp-share')
+@include('partials.music-player')
 </body>
 </html>

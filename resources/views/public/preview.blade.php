@@ -318,7 +318,7 @@
                     {{ app()->isLocale('ar') ? 'استخدم هذا القالب ←' : 'Use This Template →' }}
                 </a>
             @else
-                <a href="{{ route('register') }}?template={{ $template->id }}" class="btn-cta">
+                <a href="{{ route('login') }}?template={{ $template->id }}" class="btn-cta">
                     {{ app()->isLocale('ar') ? 'ابدأ مجاناً ←' : 'Get Started Free →' }}
                 </a>
             @endauth
@@ -348,12 +348,12 @@
     <div class="cta-toast">
         @if(app()->isLocale('ar'))
             <p>أعجبك؟ <span>جرّبه مجاناً</span> وخصّصه بأسمائكم وتفاصيلكم</p>
-            <a href="{{ route('register') }}?template={{ $template->id }}" class="btn-cta">
+            <a href="{{ route('login') }}?template={{ $template->id }}" class="btn-cta">
                 💌 ابدأ الآن
             </a>
         @else
             <p>Like it? <span>Try it free</span> and personalize it with your details</p>
-            <a href="{{ route('register') }}?template={{ $template->id }}" class="btn-cta">
+            <a href="{{ route('login') }}?template={{ $template->id }}" class="btn-cta">
                 💌 Start Free
             </a>
         @endif

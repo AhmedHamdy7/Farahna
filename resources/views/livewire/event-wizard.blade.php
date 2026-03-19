@@ -185,6 +185,12 @@
                     <label class="form-label">رابط الخريطة <span style="color:#a8a29e;">(اختياري)</span></label>
                     <input type="url" class="form-input" wire:model="venueMapLink" placeholder="https://maps.google.com/...">
                 </div>
+
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label class="form-label">🎵 موسيقى خلفية <span style="color:#a8a29e;">(اختياري — رابط MP3)</span></label>
+                    <input type="url" class="form-input" wire:model="musicUrl" placeholder="https://example.com/song.mp3">
+                    <p style="font-size:12px; color:#a8a29e; margin-top:4px;">سيظهر زر تشغيل عائم في الدعوة الإلكترونية</p>
+                </div>
             </div>
 
         {{-- STEP 5: Publish Settings --}}

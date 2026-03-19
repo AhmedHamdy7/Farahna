@@ -14,6 +14,7 @@ class RsvpResponse extends Model
         'phone',
         'attending',
         'guests_count',
+        'notes',
     ];
 
     protected function casts(): array

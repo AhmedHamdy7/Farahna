@@ -24,6 +24,7 @@
             --muted:   #8877aa;
             --pb-accent:   #ff0080;
             --pb-btn-text: #fff;
+            --map-bg: #050505; --map-text: #eee; --map-accent: #ff2d78;
         }
 
         *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -441,6 +442,11 @@
                     </div>
                     <label class="neon-label">عدد الحضور</label>
                     <input type="number" min="1" max="10" class="neon-input" value="1">
+
+                    <div class="form-group">
+                        <label class="form-label">ملاحظات <span style="opacity:.6; font-size:.85em;">(اختياري)</span></label>
+                        <textarea name="notes" class="form-input" rows="2" placeholder="مثال: حساسية من المكسرات، قادمون من خارج المدينة..." style="resize:vertical; min-height:70px;">{{ old('notes') }}</textarea>
+                    </div>
                     <button class="ticket-submit" @click="rsvpSent=true">⚡ تأكيد الحجز</button>
                 </div>
             </template>
@@ -461,5 +467,8 @@
     <div style="color:rgba(240,232,255,.3);font-size:13px;margin-top:8px">{{ $event->coupleName() }} · {{ $event->event_date->translatedFormat('d F Y') }}</div>
 </footer>
 
+@include('partials.venue-map')
+@include('partials.whatsapp-share')
+@include('partials.music-player')
 </body>
 </html>

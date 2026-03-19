@@ -24,6 +24,7 @@
             --muted:   #8a6a50;
             --pb-accent:   #c4622d;
             --pb-btn-text: #fff;
+            --map-bg: #1a0d00; --map-text: #f0c880; --map-accent: #c4622d;
         }
 
         *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -456,6 +457,11 @@
                     </div>
                     <label class="rsvp-label">عدد الأشخاص</label>
                     <input type="number" min="1" max="10" class="rsvp-input" value="1">
+
+                    <div class="form-group">
+                        <label class="form-label">ملاحظات <span style="opacity:.6; font-size:.85em;">(اختياري)</span></label>
+                        <textarea name="notes" class="form-input" rows="2" placeholder="مثال: حساسية من المكسرات، قادمون من خارج المدينة..." style="resize:vertical; min-height:70px;">{{ old('notes') }}</textarea>
+                    </div>
                     <button class="rsvp-submit" @click="rsvpSent=true">🌅 تأكيد الحضور</button>
                 </div>
             </template>
@@ -477,5 +483,8 @@
     صُنع بحب · فرحنا للمناسبات
 </footer>
 
+@include('partials.venue-map')
+@include('partials.whatsapp-share')
+@include('partials.music-player')
 </body>
 </html>

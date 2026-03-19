@@ -52,6 +52,7 @@ class EventController extends Controller
             'venue_name'     => ['required', 'string', 'max:255'],
             'venue_address'  => ['nullable', 'string', 'max:255'],
             'venue_map_link' => ['nullable', 'string', 'max:500'],
+            'music_url'      => ['nullable', 'url', 'max:500'],
             'subdomain'      => ['nullable', 'alpha_dash', 'max:100', 'unique:events,subdomain,' . $event->id],
             'password_hint'  => ['nullable', 'string', 'max:255'],
             'new_password'   => ['nullable', 'string', 'min:4', 'max:100'],
@@ -74,6 +75,10 @@ class EventController extends Controller
             'venue_name'     => $request->venue_name,
             'venue_address'  => $request->venue_address ?: null,
             'venue_map_link' => $request->venue_map_link ?: null,
+            'custom_data'    => array_filter(array_merge(
+                $event->custom_data ?? [],
+                ['music_url' => $request->music_url ?: null]
+            )),
             'subdomain'      => $request->subdomain ?: null,
             'password_hint'  => $request->password_hint ?: null,
             'is_published'   => $request->boolean('is_published'),

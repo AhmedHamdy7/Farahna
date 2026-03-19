@@ -31,6 +31,7 @@
             --border: #e7e5e4;
             --pb-accent:   #e11d48;
             --pb-btn-text: #fff;
+            --map-bg: #fdf8f0; --map-text: #1c1917; --map-accent: #e11d48;
         }
 
         html { scroll-behavior: smooth; }
@@ -813,6 +814,11 @@
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label">ملاحظات <span style="opacity:.6; font-size:.85em;">(اختياري)</span></label>
+                    <textarea name="notes" class="form-input" rows="2" placeholder="مثال: حساسية من المكسرات، قادمون من خارج المدينة..." style="resize:vertical; min-height:70px;">{{ old('notes') }}</textarea>
+                </div>
+
                 <button type="submit" class="btn-submit">
                     {{ __('invitation.rsvp_submit') }}
                 </button>
@@ -1038,5 +1044,8 @@
     });
 </script>
 
+@include('partials.venue-map')
+@include('partials.whatsapp-share')
+@include('partials.music-player')
 </body>
 </html>

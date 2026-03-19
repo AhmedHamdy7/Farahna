@@ -25,6 +25,7 @@
             --ink:    #1a0f08;
             --pb-accent:   #6b1a2e;
             --pb-btn-text: #fff;
+            --map-bg: #fdf5e6; --map-text: #3d2b1f; --map-accent: #9b2335;
         }
 
         *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -502,6 +503,11 @@
                     </div>
                 </div>
                 <div class="rsvp-field"><label class="rsvp-label">عدد الأفراد</label><input type="number" min="1" max="10" class="rsvp-input" value="1"></div>
+
+                <div class="form-group">
+                    <label class="form-label">ملاحظات <span style="opacity:.6; font-size:.85em;">(اختياري)</span></label>
+                    <textarea name="notes" class="form-input" rows="2" placeholder="مثال: حساسية من المكسرات، قادمون من خارج المدينة..." style="resize:vertical; min-height:70px;">{{ old('notes') }}</textarea>
+                </div>
                 <button type="submit" class="rsvp-btn">أرسل بطاقة الرد 💌</button>
             </form>
         </template>
@@ -522,5 +528,8 @@
     صُنع بكل محبة · فرحنا لإدارة المناسبات
 </footer>
 
+@include('partials.venue-map')
+@include('partials.whatsapp-share')
+@include('partials.music-player')
 </body>
 </html>

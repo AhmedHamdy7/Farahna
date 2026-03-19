@@ -70,29 +70,103 @@
 
             {{-- Stats --}}
             @php
-                $allWishes  = $event->wishes;
-                $rsvpAll    = $event->rsvpResponses;
-                $rsvpYes    = $rsvpAll->where('attending', \App\Enums\RsvpStatus::Yes)->count();
-                $rsvpNo     = $rsvpAll->where('attending', \App\Enums\RsvpStatus::No)->count();
-                $rsvpMaybe  = $rsvpAll->where('attending', \App\Enums\RsvpStatus::Maybe)->count();
-                $totalGuests= $rsvpAll->where('attending', \App\Enums\RsvpStatus::Yes)->sum('guests_count');
+                $allWishes   = $event->wishes;
+                $rsvpAll     = $event->rsvpResponses;
+                $rsvpYes     = $rsvpAll->where('attending', \App\Enums\RsvpStatus::Yes)->count();
+                $rsvpNo      = $rsvpAll->where('attending', \App\Enums\RsvpStatus::No)->count();
+                $rsvpMaybe   = $rsvpAll->where('attending', \App\Enums\RsvpStatus::Maybe)->count();
+                $totalGuests = $rsvpAll->where('attending', \App\Enums\RsvpStatus::Yes)->sum('guests_count');
+                $rsvpTotal   = $rsvpAll->count();
+                $yPct  = $rsvpTotal ? round($rsvpYes   / $rsvpTotal * 100) : 0;
+                $nPct  = $rsvpTotal ? round($rsvpNo    / $rsvpTotal * 100) : 0;
+                $mPct  = $rsvpTotal ? round($rsvpMaybe / $rsvpTotal * 100) : 0;
+                // SVG donut: circumference=251.2 (r=40)
+                $circ      = 251.2;
+                $yDash     = $rsvpTotal ? ($rsvpYes   / $rsvpTotal * $circ) : 0;
+                $nDash     = $rsvpTotal ? ($rsvpNo    / $rsvpTotal * $circ) : 0;
+                $mDash     = $rsvpTotal ? ($rsvpMaybe / $rsvpTotal * $circ) : 0;
+                $yOffset   = 0;
+                $nOffset   = -$yDash;
+                $mOffset   = -$yDash - $nDash;
             @endphp
-            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem;">
-                <div class="card" style="text-align:center;">
-                    <p style="font-size:1.6rem; font-weight:700; color:#16a34a;">{{ $rsvpYes }}</p>
-                    <p style="font-size:.75rem; color:#78716c;">✅ حاضر</p>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <p style="font-size:1.6rem; font-weight:700; color:#dc2626;">{{ $rsvpNo }}</p>
-                    <p style="font-size:.75rem; color:#78716c;">❌ غائب</p>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <p style="font-size:1.6rem; font-weight:700; color:#d97706;">{{ $rsvpMaybe }}</p>
-                    <p style="font-size:.75rem; color:#78716c;">🤔 ربما</p>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <p style="font-size:1.6rem; font-weight:700; color:#7c3aed;">{{ $totalGuests }}</p>
-                    <p style="font-size:.75rem; color:#78716c;">👥 إجمالي الضيوف</p>
+
+            {{-- RSVP Visual Dashboard --}}
+            <div class="card" style="margin-bottom:1.5rem;">
+                <h2 style="font-weight:700; margin-bottom:1.25rem; font-size:1rem;">📊 إحصائيات الحضور</h2>
+
+                <div style="display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap;">
+
+                    {{-- Donut Chart (SVG) --}}
+                    <div style="flex-shrink:0; position:relative; width:120px; height:120px;">
+                        <svg viewBox="0 0 100 100" width="120" height="120" style="transform:rotate(-90deg);">
+                            @if($rsvpTotal > 0)
+                                {{-- Green (Yes) --}}
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#16a34a" stroke-width="14"
+                                    stroke-dasharray="{{ $yDash }} {{ $circ }}"
+                                    stroke-dashoffset="{{ $yOffset }}"/>
+                                {{-- Red (No) --}}
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#dc2626" stroke-width="14"
+                                    stroke-dasharray="{{ $nDash }} {{ $circ }}"
+                                    stroke-dashoffset="{{ $nOffset }}"/>
+                                {{-- Amber (Maybe) --}}
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#d97706" stroke-width="14"
+                                    stroke-dasharray="{{ $mDash }} {{ $circ }}"
+                                    stroke-dashoffset="{{ $mOffset }}"/>
+                            @else
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" stroke-width="14"
+                                    stroke-dasharray="{{ $circ }} 0"/>
+                            @endif
+                        </svg>
+                        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                            <span style="font-size:1.4rem; font-weight:800; color:#1c1917; line-height:1;">{{ $rsvpTotal }}</span>
+                            <span style="font-size:.65rem; color:#78716c;">رد</span>
+                        </div>
+                    </div>
+
+                    {{-- Bar Stats --}}
+                    <div style="flex:1; min-width:180px; display:flex; flex-direction:column; gap:.75rem;">
+                        {{-- Yes --}}
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:.8rem; margin-bottom:3px;">
+                                <span style="color:#16a34a; font-weight:600;">✅ حاضر</span>
+                                <span style="font-weight:700;">{{ $rsvpYes }} <small style="color:#78716c; font-weight:400;">({{ $yPct }}%)</small></span>
+                            </div>
+                            <div style="background:#f0f0f0; border-radius:999px; height:8px; overflow:hidden;">
+                                <div style="background:#16a34a; height:100%; border-radius:999px; width:{{ $yPct }}%; transition:width .8s ease;"></div>
+                            </div>
+                        </div>
+                        {{-- No --}}
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:.8rem; margin-bottom:3px;">
+                                <span style="color:#dc2626; font-weight:600;">❌ غائب</span>
+                                <span style="font-weight:700;">{{ $rsvpNo }} <small style="color:#78716c; font-weight:400;">({{ $nPct }}%)</small></span>
+                            </div>
+                            <div style="background:#f0f0f0; border-radius:999px; height:8px; overflow:hidden;">
+                                <div style="background:#dc2626; height:100%; border-radius:999px; width:{{ $nPct }}%; transition:width .8s ease;"></div>
+                            </div>
+                        </div>
+                        {{-- Maybe --}}
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:.8rem; margin-bottom:3px;">
+                                <span style="color:#d97706; font-weight:600;">🤔 ربما</span>
+                                <span style="font-weight:700;">{{ $rsvpMaybe }} <small style="color:#78716c; font-weight:400;">({{ $mPct }}%)</small></span>
+                            </div>
+                            <div style="background:#f0f0f0; border-radius:999px; height:8px; overflow:hidden;">
+                                <div style="background:#d97706; height:100%; border-radius:999px; width:{{ $mPct }}%; transition:width .8s ease;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Total Guests Badge --}}
+                    <div style="
+                        flex-shrink:0; background:linear-gradient(135deg,#7c3aed,#a855f7);
+                        border-radius:16px; padding:1.1rem 1.5rem; text-align:center; color:#fff;
+                        min-width:100px; box-shadow:0 4px 18px rgba(124,58,237,.3);
+                    ">
+                        <div style="font-size:2rem; font-weight:800; line-height:1;">{{ $totalGuests }}</div>
+                        <div style="font-size:.7rem; opacity:.85; margin-top:3px;">إجمالي الضيوف</div>
+                        <div style="font-size:.65rem; opacity:.6; margin-top:2px;">👥 المؤكدون</div>
+                    </div>
                 </div>
             </div>
 
@@ -113,6 +187,7 @@
                                     <th style="padding:.6rem .75rem; color:#78716c; font-weight:600;">الهاتف</th>
                                     <th style="padding:.6rem .75rem; color:#78716c; font-weight:600;">الحضور</th>
                                     <th style="padding:.6rem .75rem; color:#78716c; font-weight:600;">عدد الأشخاص</th>
+                                    <th style="padding:.6rem .75rem; color:#78716c; font-weight:600;">ملاحظات</th>
                                     <th style="padding:.6rem .75rem; color:#78716c; font-weight:600;">التاريخ</th>
                                 </tr>
                             </thead>
@@ -131,6 +206,7 @@
                                             @endif
                                         </td>
                                         <td style="padding:.65rem .75rem; text-align:center;">{{ $rsvp->guests_count }}</td>
+                                        <td style="padding:.65rem .75rem; color:#78716c; font-size:.8rem; max-width:160px;">{{ $rsvp->notes ?? '—' }}</td>
                                         <td style="padding:.65rem .75rem; color:#78716c; font-size:.8rem;">{{ $rsvp->created_at->diffForHumans() }}</td>
                                     </tr>
                                 @endforeach

@@ -29,6 +29,7 @@
             --border2: rgba(160,120,50,.12);
             --pb-accent:   #a07832;
             --pb-btn-text: #fff;
+            --map-bg: #f8f5ef; --map-text: #1a1208; --map-accent: #a07832;
         }
 
         html { scroll-behavior:smooth; }
@@ -380,6 +381,7 @@
 </section>
 @endif
 
+@include('partials.venue-map')
 {{-- ─── Wishes / Guestbook ─── --}}
 <section id="wishes">
     <div class="section-inner" style="text-align:center;">
@@ -467,6 +469,11 @@
                 <div class="f-group">
                     <label class="f-label">عدد المرافقين</label>
                     <input type="number" name="guests_count" class="f-input" value="{{ old('guests_count', 1) }}" min="1" max="20">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">ملاحظات <span style="opacity:.6; font-size:.85em;">(اختياري)</span></label>
+                    <textarea name="notes" class="form-input" rows="2" placeholder="مثال: حساسية من المكسرات، قادمون من خارج المدينة..." style="resize:vertical; min-height:70px;">{{ old('notes') }}</textarea>
                 </div>
             </div>
             <button type="submit" class="btn-primary" style="width:100%;">✓ تأكيد الحضور</button>
@@ -581,5 +588,7 @@ document.getElementById('lb').addEventListener('click',function(e){
 });
 </script>
 
+@include('partials.whatsapp-share')
+@include('partials.music-player')
 </body>
 </html>

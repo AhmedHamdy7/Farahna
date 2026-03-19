@@ -49,6 +49,7 @@ class EventWizard extends Component
     public string $venueName    = '';
     public string $venueAddress = '';
     public string $venueMapLink = '';
+    public string $musicUrl     = '';
 
     // Step 5 – Publish Settings
     public string $subdomain     = '';
@@ -210,6 +211,7 @@ class EventWizard extends Component
             'venue_name'     => $this->venueName,
             'venue_address'  => $this->venueAddress ?: null,
             'venue_map_link' => $this->venueMapLink ?: null,
+            'custom_data'    => array_filter(['music_url' => $this->musicUrl ?: null]),
             'subdomain'      => $this->subdomain ?: null,
             'password'       => $this->password ? bcrypt($this->password) : null,
             'password_hint'  => $this->passwordHint ?: null,

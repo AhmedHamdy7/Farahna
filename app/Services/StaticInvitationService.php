@@ -18,8 +18,9 @@ class StaticInvitationService
         $isPremium    = ! $event->template->plan->isFree();
 
         $html = View::make($viewName, [
-            'event'     => $event,
-            'watermark' => ! $isPremium,
+            'event'        => $event,
+            'watermark'    => ! $isPremium,
+            'forScreenshot'=> true,
         ])->render();
 
         $outputDir  = "invitations/{$event->id}";

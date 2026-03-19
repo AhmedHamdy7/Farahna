@@ -32,7 +32,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            $redirect = $this->redirectAfterAuth();
+            $redirect = $this->redirectAfterAuth($request);
             return redirect($redirect);
         }
 
@@ -67,12 +67,14 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect($this->redirectAfterAuth());
+        return redirect($this->redirectAfterAuth($request));
     }
 
-    private function redirectAfterAuth(): string
+    private function redirectAfterAuth(Request $request): string
     {
-        $templateId = session()->pull('intended_template');
+        // Read from POST form field first (most reliable), then session fallback
+        $templateId = $request->input('intended_template')
+                   ?: session()->pull('intended_template');
 
         if ($templateId) {
             return route('customer.events.create') . '?template=' . $templateId;

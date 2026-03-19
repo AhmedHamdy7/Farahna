@@ -8,13 +8,34 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        @if(!($forScreenshot ?? false))
+        /* ── Browser display: fit-to-screen ── */
+        html, body {
+            width: 100%; height: 100vh; overflow: hidden;
+            background: #e8e0d5;
+            display: flex; align-items: center; justify-content: center;
+            font-family: {{ app()->isLocale('ar') ? "'Tajawal', sans-serif" : "'Cormorant Garamond', serif" }};
+        }
+        .scale-container {
+            /* sized dynamically by JS to the scaled visual dimensions */
+        }
+        .invitation-wrap {
+            width: 800px; height: 1131px;
+            background: #fdf8f0;
+            box-shadow: 0 24px 64px rgba(0,0,0,.25), 0 4px 16px rgba(0,0,0,.12);
+            overflow: hidden; position: relative;
+            transform-origin: top left;
+        }
+        @else
+        /* ── Screenshot mode: body IS the card ── */
         body {
-            width: 800px;
-            height: 1131px; /* A4 ratio */
+            width: 800px; height: 1131px; overflow: hidden;
             background: #fdf8f0;
             font-family: {{ app()->isLocale('ar') ? "'Tajawal', sans-serif" : "'Cormorant Garamond', serif" }};
-            overflow: hidden;
         }
+        .scale-container { width: 100%; height: 100%; }
+        .invitation-wrap  { width: 100%; height: 100%; }
+        @endif
 
         .invitation {
             width: 100%;
@@ -25,7 +46,6 @@
             align-items: center;
             justify-content: center;
             padding: 70px 90px;
-            background: #fdf8f0;
         }
 
         /* ─── Multi-layer Border Decoration ─── */
@@ -179,6 +199,8 @@
     </style>
 </head>
 <body>
+<div class="scale-container" id="sc">
+<div class="invitation-wrap" id="card">
 <div class="invitation">
     <div class="bg-pattern"></div>
     <div class="border-1"></div>
@@ -285,6 +307,30 @@
     @if($watermark ?? true)
         <div class="watermark">Farahna · فرحنا</div>
     @endif
-</div>
+</div>{{-- invitation --}}
+</div>{{-- card --}}
+</div>{{-- scale-container --}}
+
+@if(!($forScreenshot ?? false))
+<script>
+(function () {
+    var card = document.getElementById('card');
+    var sc   = document.getElementById('sc');
+    function fit() {
+        var pad   = 24;
+        var scale = Math.min(
+            (window.innerWidth  - pad) / 800,
+            (window.innerHeight - pad) / 1131,
+            1
+        );
+        card.style.transform = 'scale(' + scale + ')';
+        sc.style.width  = (800  * scale) + 'px';
+        sc.style.height = (1131 * scale) + 'px';
+    }
+    fit();
+    window.addEventListener('resize', fit);
+})();
+</script>
+@endif
 </body>
 </html>

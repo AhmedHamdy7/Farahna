@@ -96,12 +96,21 @@
                        placeholder="مثال: القاهرة، مصر الجديدة">
             </div>
 
-            <div class="form-group" style="margin-bottom:0;">
+            <div class="form-group">
                 <label class="form-label">رابط الخريطة</label>
                 <input type="url" name="venue_map_link" class="form-input @error('venue_map_link') border-red @enderror"
                        value="{{ old('venue_map_link', $event->venue_map_link) }}"
                        placeholder="https://maps.google.com/...">
                 @error('venue_map_link')<p class="form-error">{{ $message }}</p>@enderror
+            </div>
+
+            <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">🎵 موسيقى خلفية <span style="color:#a8a29e; font-weight:400;">(اختياري — رابط MP3)</span></label>
+                <input type="url" name="music_url" class="form-input @error('music_url') border-red @enderror"
+                       value="{{ old('music_url', $event->custom_data['music_url'] ?? '') }}"
+                       placeholder="https://example.com/song.mp3">
+                <p style="font-size:12px; color:#a8a29e; margin-top:4px;">سيظهر زر تشغيل عائم في الدعوة الإلكترونية</p>
+                @error('music_url')<p class="form-error">{{ $message }}</p>@enderror
             </div>
         </div>
 

@@ -17,8 +17,18 @@ class InvitationController extends Controller
             'rsvpResponses',
         ]);
 
-        $templateSlug = $event->template->slug;
-        $viewName     = "templates.website.{$templateSlug}.index";
+        $template     = $event->template;
+        $templateSlug = $template->slug;
+
+        if ($template->isStatic()) {
+            $viewName = "templates.static.{$templateSlug}.template";
+            return view($viewName, [
+                'event'     => $event,
+                'watermark' => ! $template->plan->isFree(),
+            ]);
+        }
+
+        $viewName = "templates.website.{$templateSlug}.index";
 
         return view($viewName, compact('event'));
     }

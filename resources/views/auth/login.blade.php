@@ -17,6 +17,7 @@
 
             <form action="{{ route('login') }}" method="POST">
                 @csrf
+                <input type="hidden" name="intended_template" value="{{ session('intended_template') ?? request('template') }}">
 
                 <div class="form-group">
                     <label class="form-label">البريد الإلكتروني</label>
@@ -43,7 +44,7 @@
 
         <p style="text-align:center; margin-top:1.5rem; color:#78716c; font-size:.9rem;">
             ليس لديك حساب؟
-            <a href="{{ route('register') }}" style="color:#e11d48; text-decoration:none; font-weight:500;">سجّل الآن مجاناً</a>
+            <a href="{{ route('register') }}{{ session('intended_template') || request('template') ? '?template='.(session('intended_template') ?? request('template')) : '' }}" style="color:#e11d48; text-decoration:none; font-weight:500;">سجّل الآن مجاناً</a>
         </p>
     </div>
 </div>

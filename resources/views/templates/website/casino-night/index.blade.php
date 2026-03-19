@@ -23,6 +23,7 @@
             --muted:   #6b6050;
             --pb-accent:   #d4af37;
             --pb-btn-text: #050505;
+            --map-bg: #0a1f0a; --map-text: #d4af37; --map-accent: #d4af37;
         }
 
         *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -498,6 +499,11 @@
                     </div>
                     <label class="t-label">عدد الأشخاص</label>
                     <input type="number" min="1" max="10" class="t-input" value="1">
+
+                    <div class="form-group">
+                        <label class="form-label">ملاحظات <span style="opacity:.6; font-size:.85em;">(اختياري)</span></label>
+                        <textarea name="notes" class="form-input" rows="2" placeholder="مثال: حساسية من المكسرات، قادمون من خارج المدينة..." style="resize:vertical; min-height:70px;">{{ old('notes') }}</textarea>
+                    </div>
                     <button class="t-submit" @click="rsvpSent=true">🎰 تأكيد الحضور</button>
                 </div>
             </template>
@@ -519,5 +525,8 @@
     صُنع بكل أناقة · فرحنا للمناسبات
 </footer>
 
+@include('partials.venue-map')
+@include('partials.whatsapp-share')
+@include('partials.music-player')
 </body>
 </html>

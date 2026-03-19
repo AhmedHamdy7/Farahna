@@ -17,6 +17,7 @@ class RsvpController extends Controller
             'phone'        => ['nullable', 'string', 'max:20'],
             'attending'    => ['required', 'in:yes,no,maybe'],
             'guests_count' => ['required', 'integer', 'min:1', 'max:20'],
+            'notes'        => ['nullable', 'string', 'max:500'],
         ], [
             'guest_name.required' => 'يرجى إدخال اسمك.',
             'attending.required'  => 'يرجى تحديد حضورك.',
@@ -27,6 +28,7 @@ class RsvpController extends Controller
             'phone'        => $request->phone,
             'attending'    => RsvpStatus::from($request->attending),
             'guests_count' => $request->guests_count,
+            'notes'        => $request->notes ?: null,
         ]);
 
         $message = match(RsvpStatus::from($request->attending)) {
