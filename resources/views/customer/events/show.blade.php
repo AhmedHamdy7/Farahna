@@ -20,7 +20,7 @@
     <div class="card" style="margin-bottom:1.5rem;">
         <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
             <div>
-                <h1 style="font-family:'Playfair Display',serif; font-size:1.8rem; color:#e11d48;">
+                <h1 style="font-family:'Playfair Display',serif; font-size:1.8rem; font-style:italic; color:#a8863a;">
                     {{ $event->coupleName() }}
                 </h1>
                 <p style="color:#78716c; margin-top:.35rem;">
@@ -174,9 +174,9 @@
 
                     {{-- Total Guests Badge --}}
                     <div style="
-                        flex-shrink:0; background:linear-gradient(135deg,#7c3aed,#a855f7);
-                        border-radius:16px; padding:1.1rem 1.5rem; text-align:center; color:#fff;
-                        min-width:100px; box-shadow:0 4px 18px rgba(124,58,237,.3);
+                        flex-shrink:0; background:linear-gradient(135deg,#0a1628,#a8863a);
+                        border-radius:16px; padding:1.1rem 1.5rem; text-align:center; color:#e0c878;
+                        min-width:100px; box-shadow:0 4px 18px rgba(10,22,40,.3);
                     ">
                         <div style="font-size:2rem; font-weight:800; line-height:1;">{{ $totalGuests }}</div>
                         <div style="font-size:.7rem; opacity:.85; margin-top:3px;">إجمالي الضيوف</div>
@@ -257,7 +257,7 @@
                                 <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem;">
                                     <div style="flex:1;">
                                         <div style="display:flex; align-items:center; gap:.5rem; margin-bottom:.4rem;">
-                                            <span style="font-weight:700; font-size:.95rem; color:#e11d48;">{{ $wish->guest_name }}</span>
+                                            <span style="font-weight:700; font-size:.95rem; color:#a8863a;">{{ $wish->guest_name }}</span>
                                             @if($wish->is_approved)
                                                 <span style="font-size:.7rem; background:#dcfce7; color:#166534; padding:.1rem .5rem; border-radius:999px;">✓ معتمدة</span>
                                             @else
@@ -329,8 +329,8 @@
                         padding:1.5rem; cursor:pointer; transition:all .2s;
                         color:#78716c; font-size:.9rem; margin-bottom:1rem;
                         background:#fafaf9;
-                    " onmouseover="this.style.borderColor='#e11d48';this.style.color='#e11d48'"
-                       onmouseout="this.style.borderColor='#e7e5e4';this.style.color='#78716c'">
+                    " onmouseover="this.style.borderColor='#c9a84c';this.style.color='#a8863a'"
+                       onmouseout="this.style.borderColor='#e8e3d8';this.style.color='#6b6358'">
                         <span style="font-size:2rem;">📷</span>
                         <span style="font-weight:600;">اضغط لاختيار الصور</span>
                         <span style="font-size:.78rem;">JPG, PNG, WEBP · حتى 5 ميجا للصورة · حتى {{ 20 - $event->gallery->count() }} صورة</span>

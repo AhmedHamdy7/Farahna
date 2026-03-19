@@ -28,7 +28,7 @@
             @foreach ($events as $event)
                 <div class="card" style="overflow:hidden; padding:0;">
                     {{-- Template Thumbnail --}}
-                    <div style="height:160px; background:linear-gradient(135deg,#fff1f2,#fce7f3); display:flex; align-items:center; justify-content:center;">
+                    <div style="height:160px; background:linear-gradient(135deg,#0a1628,#162035,#a8863a); display:flex; align-items:center; justify-content:center;">
                         @if ($event->template?->thumbnail)
                             <img src="{{ Storage::url($event->template->thumbnail) }}"
                                  style="width:100%; height:100%; object-fit:cover;">

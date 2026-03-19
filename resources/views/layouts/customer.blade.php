@@ -14,25 +14,31 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --rose:   #e11d48;
-            --rose-light: #fff1f2;
-            --gold:   #b45309;
-            --text:   #1c1917;
-            --muted:  #78716c;
-            --border: #e7e5e4;
-            --white:  #ffffff;
+            --gold:    #c9a84c;
+            --gold-d:  #a8863a;
+            --gold-l:  #e0c878;
+            --gold-bg: #faf7ee;
+            --gold-xl: #f0e8c8;
+            --navy:    #0a1628;
+            --navy-m:  #162035;
+            --text:    #12100e;
+            --muted:   #6b6358;
+            --border:  #e8e3d8;
+            --white:   #ffffff;
+            --surface: #faf8f3;
         }
 
         body {
             font-family: 'Tajawal', sans-serif;
-            background: #faf9f7;
+            background: var(--surface);
             color: var(--text);
             min-height: 100vh;
         }
 
         /* ─── Navbar ─── */
         .navbar {
-            background: var(--white);
+            background: rgba(255,255,255,.96);
+            backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border);
             padding: 0 1.5rem;
             height: 64px;
@@ -42,13 +48,16 @@
             position: sticky;
             top: 0;
             z-index: 50;
+            box-shadow: 0 1px 12px rgba(18,16,14,.05);
         }
 
         .navbar-brand {
             font-family: 'Playfair Display', serif;
             font-size: 1.5rem;
-            color: var(--rose);
+            font-style: italic;
+            color: var(--gold-d);
             text-decoration: none;
+            font-weight: 700;
         }
 
         .navbar-nav { display: flex; align-items: center; gap: 1rem; }
@@ -57,9 +66,10 @@
             color: var(--muted);
             text-decoration: none;
             font-size: 0.9rem;
+            font-weight: 500;
             transition: color .2s;
         }
-        .nav-link:hover { color: var(--rose); }
+        .nav-link:hover { color: var(--gold-d); }
 
         .btn {
             display: inline-flex;
@@ -73,19 +83,25 @@
             text-decoration: none;
             transition: all .2s;
             border: none;
+            font-weight: 600;
         }
         .btn-primary {
-            background: var(--rose);
-            color: var(--white);
+            background: var(--navy);
+            color: var(--gold-l);
+            box-shadow: 0 2px 10px rgba(10,22,40,.25);
         }
-        .btn-primary:hover { background: #be123c; }
+        .btn-primary:hover {
+            background: var(--navy-m);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(10,22,40,.35);
+        }
 
         .btn-outline {
             background: transparent;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             color: var(--text);
         }
-        .btn-outline:hover { border-color: var(--rose); color: var(--rose); }
+        .btn-outline:hover { border-color: var(--gold); color: var(--gold-d); background: var(--gold-bg); }
 
         /* ─── Container ─── */
         .container {
@@ -98,15 +114,16 @@
         .card {
             background: var(--white);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(18,16,14,.04);
         }
 
         /* ─── Alert ─── */
         .alert-error {
-            background: #fff1f2;
-            border: 1px solid #fecdd3;
-            color: #be123c;
+            background: #fff8f0;
+            border: 1px solid #f0d898;
+            color: var(--gold-d);
             padding: .75rem 1rem;
             border-radius: 8px;
             font-size: .875rem;
@@ -115,21 +132,22 @@
 
         /* ─── Form ─── */
         .form-group { margin-bottom: 1.25rem; }
-        .form-label { display: block; font-size: .875rem; font-weight: 500; margin-bottom: .4rem; }
+        .form-label { display: block; font-size: .875rem; font-weight: 600; margin-bottom: .4rem; color: var(--text); }
         .form-input {
             width: 100%;
             padding: .6rem .9rem;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: 8px;
             font-family: inherit;
             font-size: .95rem;
-            transition: border-color .2s;
+            transition: border-color .2s, box-shadow .2s;
             background: var(--white);
+            color: var(--text);
         }
         .form-input:focus {
             outline: none;
-            border-color: var(--rose);
-            box-shadow: 0 0 0 3px rgba(225, 29, 72, .1);
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201,168,76,.15);
         }
         .form-error { color: #be123c; font-size: .8rem; margin-top: .3rem; }
     </style>

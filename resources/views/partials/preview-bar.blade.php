@@ -2,7 +2,9 @@
   Unified Preview Bar — used by all website templates
   Each template defines in its :root { --pb-accent: #hex; --pb-btn-text: #hex; }
   Variables available: $template (optional), $event
+  Hidden automatically when $isFrame = true (phone mockup mode)
 --}}
+@if(!($isFrame ?? false))
 @php
   $tpl     = $template ?? ($event->relationLoaded('template') ? $event->template : null);
   $tplName = $tpl?->name ?? 'معاينة';
@@ -145,3 +147,4 @@
     @endauth
 </div>
 <div style="height:58px"></div>
+@endif

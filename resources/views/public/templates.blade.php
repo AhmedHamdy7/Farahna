@@ -8,19 +8,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.10/cdn.min.js" defer></script>
     <style>
         *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-        :root { --rose:#e11d48; --gold:#b45309; --dark:#1c1917; --muted:#78716c; --border:#e7e5e4; }
-        body { font-family:'Tajawal',sans-serif; background:#faf9f7; color:var(--dark); }
+        :root {
+            --gold:    #c9a84c;
+            --gold-d:  #a8863a;
+            --gold-l:  #e0c878;
+            --gold-bg: #faf7ee;
+            --gold-xl: #f0e8c8;
+            --navy:    #0a1628;
+            --navy-m:  #162035;
+            --dark:    #12100e;
+            --muted:   #6b6358;
+            --border:  #e8e3d8;
+            --surface: #faf8f3;
+        }
+        body { font-family:'Tajawal',sans-serif; background:var(--surface); color:var(--dark); }
 
-        .nav { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between; }
-        .nav-brand { font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--rose); text-decoration:none; }
-        .btn { display:inline-flex; align-items:center; gap:.4rem; padding:.5rem 1.25rem; border-radius:8px; font-size:.9rem; font-family:inherit; cursor:pointer; text-decoration:none; transition:all .2s; border:none; font-weight:500; }
-        .btn-primary { background:var(--rose); color:#fff; }
-        .btn-primary:hover { background:#be123c; }
+        .nav { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.96); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); padding:0 2rem; height:64px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 1px 12px rgba(18,16,14,.05); }
+        .nav-brand { font-family:'Playfair Display',serif; font-size:1.5rem; font-style:italic; font-weight:700; color:var(--gold-d); text-decoration:none; }
+        .btn { display:inline-flex; align-items:center; gap:.4rem; padding:.5rem 1.25rem; border-radius:8px; font-size:.9rem; font-family:inherit; cursor:pointer; text-decoration:none; transition:all .2s; border:none; font-weight:600; }
+        .btn-primary { background:var(--navy); color:var(--gold-l); box-shadow:0 2px 10px rgba(10,22,40,.25); }
+        .btn-primary:hover { background:var(--navy-m); transform:translateY(-1px); box-shadow:0 4px 16px rgba(10,22,40,.35); }
         .btn-outline { background:transparent; border:1.5px solid var(--border); color:var(--dark); }
-        .btn-outline:hover { border-color:var(--rose); color:var(--rose); }
+        .btn-outline:hover { border-color:var(--gold); color:var(--gold-d); background:var(--gold-bg); }
 
-        .page-header { background:linear-gradient(135deg,#fff1f2,#fdf8f0); padding:4rem 2rem 2.5rem; text-align:center; border-bottom:1px solid var(--border); }
-        .page-title  { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,4vw,2.5rem); margin-bottom:.75rem; }
+        .page-header { background:linear-gradient(160deg, #fff 0%, var(--gold-bg) 60%, #f5eedc 100%); padding:4rem 2rem 2.5rem; text-align:center; border-bottom:1px solid var(--border); }
+        .page-title  { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,4vw,2.5rem); margin-bottom:.75rem; color:var(--dark); }
+        .page-title em { color:var(--gold-d); font-style:italic; }
         .page-desc   { color:var(--muted); max-width:480px; margin:0 auto 2rem; }
 
         /* ── Category Filter ── */
@@ -30,17 +43,17 @@
             padding:.4rem 1.1rem; border-radius:999px;
             border:1.5px solid var(--border); background:#fff;
             color:var(--muted); font-family:inherit; font-size:.85rem;
-            cursor:pointer; transition:all .2s;
+            cursor:pointer; transition:all .2s; font-weight:500;
         }
-        .filter-btn.active, .filter-btn:hover { border-color:var(--rose); color:var(--rose); background:#fff1f2; }
+        .filter-btn.active, .filter-btn:hover { border-color:var(--gold); color:var(--gold-d); background:var(--gold-bg); }
 
         /* ── Grid ── */
         .container { max-width:1200px; margin:0 auto; padding:3rem 2rem; }
         .templates-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.5rem; }
 
         /* ── Card ── */
-        .template-card { border:1.5px solid var(--border); border-radius:16px; overflow:hidden; background:#fff; transition:transform .3s, box-shadow .3s; }
-        .template-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px rgba(0,0,0,.1); border-color:#fecdd3; }
+        .template-card { border:1.5px solid var(--border); border-radius:16px; overflow:hidden; background:#fff; transition:transform .3s, box-shadow .3s; box-shadow:0 2px 10px rgba(18,16,14,.05); }
+        .template-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px rgba(18,16,14,.1); border-color:var(--gold-xl); }
 
         .template-thumb {
             height:220px; position:relative; overflow:hidden;
@@ -50,39 +63,39 @@
         .template-card:hover .template-thumb img { transform:scale(1.05); }
         .template-placeholder { font-size:5rem; }
 
-        /* Theme gradients per category/template */
-        .thumb-wedding    { background:linear-gradient(135deg,#fff1f2,#fce7f3); }
-        .thumb-birthday   { background:linear-gradient(135deg,#0a0a0a,#1a1500); }
-        .thumb-engagement { background:linear-gradient(135deg,#fdf0f3,#f9d7e2); }
-        .thumb-graduation { background:linear-gradient(135deg,#0a1628,#1e4976); }
+        /* Theme gradients */
+        .thumb-wedding    { background:linear-gradient(135deg,#fdf3d6,#e8c99a,#c4a06a); }
+        .thumb-birthday   { background:linear-gradient(135deg,#0a0a0a,#1a1500,#3a2800); }
+        .thumb-engagement { background:linear-gradient(135deg,#f7e8ee,#c9748a,#8b3d5a); }
+        .thumb-graduation { background:linear-gradient(135deg,#0d1b3e,#d4a843,#fef9ec); }
         .thumb-corporate  { background:linear-gradient(135deg,#f0f4ff,#e8eaf6); }
-        .thumb-galaxy     { background:linear-gradient(135deg,#050914,#1a0a2e); }
-        .thumb-confetti   { background:linear-gradient(135deg,#fff9c4,#fce4ec); }
-        .thumb-loveletter { background:linear-gradient(135deg,#f5ede0,#e8d0b0); }
-        .thumb-neon       { background:linear-gradient(135deg,#06000e,#2a003a); }
+        .thumb-galaxy     { background:linear-gradient(135deg,#050914,#1a0a2e,#3d1a5e); }
+        .thumb-confetti   { background:linear-gradient(135deg,#ff6b6b,#ffd93d,#6bcb77); }
+        .thumb-loveletter { background:linear-gradient(135deg,#faf6f0,#6b1a2e,#c9943a); }
+        .thumb-neon       { background:linear-gradient(135deg,#06000e,#ff0080,#00d4ff); }
 
         .plan-badge { position:absolute; top:.75rem; right:.75rem; border-radius:999px; padding:.2rem .7rem; font-size:.7rem; font-weight:600; }
         .plan-badge.free    { background:#dcfce7; color:#166534; border:1px solid #bbf7d0; }
         .plan-badge.premium { background:#fef9c3; color:#854d0e; border:1px solid #fef08a; }
-        .plan-badge.vip     { background:#f3e8ff; color:#7e22ce; border:1px solid #e9d5ff; }
+        .plan-badge.vip     { background:var(--gold-xl); color:var(--gold-d); border:1px solid var(--gold-l); }
 
         .cat-badge { position:absolute; bottom:.75rem; left:.75rem; background:rgba(0,0,0,.55); color:#fff; border-radius:6px; padding:.2rem .55rem; font-size:.7rem; backdrop-filter:blur(4px); }
 
         .template-body { padding:1.25rem; }
-        .template-name { font-weight:700; font-size:1.05rem; margin-bottom:.25rem; }
+        .template-name { font-weight:700; font-size:1.05rem; margin-bottom:.25rem; color:var(--dark); }
         .template-plan { font-size:.8rem; color:var(--muted); margin-bottom:1rem; }
         .template-actions { display:flex; gap:.5rem; }
         .template-actions .btn { flex:1; justify-content:center; padding:.5rem; font-size:.85rem; }
 
-        /* Template style preview chips */
+        /* Template style chips */
         .style-chips { display:flex; gap:.35rem; flex-wrap:wrap; margin-bottom:.75rem; }
-        .chip { font-size:.7rem; padding:.15rem .6rem; border-radius:999px; background:#f5f5f4; color:var(--muted); border:1px solid var(--border); }
+        .chip { font-size:.7rem; padding:.15rem .6rem; border-radius:999px; background:#f5f4f0; color:var(--muted); border:1px solid var(--border); }
         .chip.dark   { background:#1c1917; color:#d6d3d1; border-color:#292524; }
-        .chip.gold   { background:#fef9c3; color:#854d0e; border-color:#fde68a; }
-        .chip.pink   { background:#fff1f2; color:#be123c; border-color:#fecdd3; }
+        .chip.gold   { background:var(--gold-xl); color:var(--gold-d); border-color:var(--gold-l); }
+        .chip.pink   { background:#fdf0f3; color:#9d174d; border-color:#fbcfe8; }
         .chip.cosmic { background:#1e1b4b; color:#a5b4fc; border-color:#3730a3; }
         .chip.fun    { background:#ecfdf5; color:#065f46; border-color:#6ee7b7; }
-        .chip.blush  { background:#fdf0f3; color:#9d174d; border-color:#fbcfe8; }
+        .chip.blush  { background:#fdf5ec; color:var(--gold-d); border-color:var(--gold-xl); }
     </style>
 </head>
 <body x-data="{ cat: 'all', type: 'all' }">
@@ -105,7 +118,7 @@
 </nav>
 
 <div class="page-header">
-    <h1 class="page-title">{{ app()->isLocale('ar') ? '✨ استعرض قوالبنا' : '✨ Browse Our Templates' }}</h1>
+    <h1 class="page-title">{{ app()->isLocale('ar') ? 'استعرض' : 'Browse Our' }} <em>{{ app()->isLocale('ar') ? 'قوالبنا' : 'Templates' }}</em></h1>
     <p class="page-desc">{{ app()->isLocale('ar') ? 'قوالب مميزة لكل مناسبة — شاهد معاينة حية قبل البدء' : 'Beautiful templates for every occasion — preview before you start' }}</p>
 
     {{-- Category Filter --}}

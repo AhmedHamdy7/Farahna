@@ -61,6 +61,7 @@ class HomeController extends Controller
         return view("templates.website.{$template->slug}.index", [
             'event'     => $dummyEvent,
             'isPreview' => true,
+            'isFrame'   => true,
         ]);
     }
 
