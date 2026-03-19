@@ -38,30 +38,39 @@
     <form method="POST" action="{{ route('customer.events.update', $event) }}">
         @csrf @method('PUT')
 
-        {{-- ── تفاصيل الحفل ── --}}
+        @php
+            $cat = $event->category instanceof \App\Enums\EventCategory
+                ? $event->category
+                : \App\Enums\EventCategory::from($event->category ?? 'wedding');
+            [$primaryLabel, $secondaryLabel] = $cat->nameLabels();
+        @endphp
+
+        {{-- ── تفاصيل المناسبة ── --}}
         <div class="card" style="margin-bottom:1.25rem;">
             <h2 style="font-weight:700; font-size:1rem; margin-bottom:1.25rem; padding-bottom:.75rem; border-bottom:1px solid #e7e5e4;">
-                💍 تفاصيل الحفل
+                {{ $cat->icon() }} تفاصيل المناسبة
             </h2>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                <div class="form-group">
-                    <label class="form-label">اسم العريس *</label>
+            <div style="display:grid; grid-template-columns:1fr {{ $cat->isCoupleEvent() ? '1fr' : '' }}; gap:1rem;">
+                <div class="form-group" style="{{ $cat->isCoupleEvent() ? '' : 'grid-column:1/-1;' }}">
+                    <label class="form-label">{{ $primaryLabel }} *</label>
                     <input type="text" name="groom_name" class="form-input @error('groom_name') border-red @enderror"
                            value="{{ old('groom_name', $event->groom_name) }}" required>
                     @error('groom_name')<p class="form-error">{{ $message }}</p>@enderror
                 </div>
+                @if($cat->isCoupleEvent())
                 <div class="form-group">
-                    <label class="form-label">اسم العروسة *</label>
+                    <label class="form-label">{{ $secondaryLabel }} *</label>
                     <input type="text" name="bride_name" class="form-input @error('bride_name') border-red @enderror"
                            value="{{ old('bride_name', $event->bride_name) }}" required>
                     @error('bride_name')<p class="form-error">{{ $message }}</p>@enderror
                 </div>
+                @endif
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
                 <div class="form-group">
-                    <label class="form-label">تاريخ الحفل *</label>
+                    <label class="form-label">تاريخ المناسبة *</label>
                     <input type="date" name="event_date" class="form-input @error('event_date') border-red @enderror"
                            value="{{ old('event_date', $event->event_date->format('Y-m-d')) }}" required>
                     @error('event_date')<p class="form-error">{{ $message }}</p>@enderror
@@ -74,7 +83,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">اسم القاعة *</label>
+                <label class="form-label">اسم المكان / القاعة *</label>
                 <input type="text" name="venue_name" class="form-input @error('venue_name') border-red @enderror"
                        value="{{ old('venue_name', $event->venue_name) }}" required>
                 @error('venue_name')<p class="form-error">{{ $message }}</p>@enderror

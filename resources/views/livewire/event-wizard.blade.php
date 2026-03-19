@@ -9,7 +9,7 @@
 
             {{-- Progress Steps --}}
             <div style="display:flex; gap:.5rem; align-items:center;">
-                @foreach (['اختر الباقة', 'اختر القالب', 'تفاصيل الحفل', 'النشر'] as $i => $label)
+                @foreach (['نوع المناسبة', 'اختر الباقة', 'اختر القالب', 'تفاصيل المناسبة', 'النشر'] as $i => $label)
                     @php $num = $i + 1; @endphp
                     <div wire:click="goToStep({{ $num }})"
                          style="display:flex; align-items:center; gap:.4rem; cursor:{{ $num < $step ? 'pointer' : 'default' }}; flex:1;">
@@ -22,10 +22,10 @@
                         ">
                             @if($step > $num) ✓ @else {{ $num }} @endif
                         </div>
-                        <span style="font-size:.8rem; color:{{ $step === $num ? '#e11d48' : '#78716c' }}; white-space:nowrap;">
+                        <span style="font-size:.75rem; color:{{ $step === $num ? '#e11d48' : '#78716c' }}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60px;">
                             {{ $label }}
                         </span>
-                        @if($i < 3)
+                        @if($i < 4)
                             <div style="flex:1; height:2px; background:{{ $step > $num ? '#e11d48' : '#e7e5e4' }}; margin:0 .25rem;"></div>
                         @endif
                     </div>
@@ -37,12 +37,40 @@
     {{-- ─── Step Content ─── --}}
     <div style="max-width:700px; margin:2rem auto; padding:0 1.5rem;">
 
-        {{-- STEP 1: Choose Plan --}}
+        {{-- STEP 1: Choose Category --}}
         @if($step === 1)
+            <h2 style="font-size:1.2rem; font-weight:700; margin-bottom:.5rem;">ما نوع مناسبتك؟</h2>
+            <p style="color:#78716c; font-size:.9rem; margin-bottom:1.5rem;">اختر النوع وسنعرض لك القوالب المناسبة</p>
+
+            @error('selectedCategory')
+                <div style="background:#fff1f2; border:1px solid #fda4af; color:#be123c; padding:.75rem 1rem; border-radius:8px; margin-bottom:1rem; font-size:.875rem;">{{ $message }}</div>
+            @enderror
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:1rem;">
+                @foreach(\App\Enums\EventCategory::cases() as $cat)
+                    <div wire:click="selectCategory('{{ $cat->value }}')"
+                         style="
+                            padding:1.75rem 1rem; border-radius:14px; cursor:pointer;
+                            text-align:center; transition:all .2s;
+                            border:2px solid {{ $selectedCategory === $cat->value ? '#e11d48' : '#e7e5e4' }};
+                            background:{{ $selectedCategory === $cat->value ? '#fff1f2' : '#fff' }};
+                            box-shadow:{{ $selectedCategory === $cat->value ? '0 4px 12px rgba(225,29,72,.15)' : '0 1px 3px rgba(0,0,0,.05)' }};
+                            transform:{{ $selectedCategory === $cat->value ? 'translateY(-2px)' : 'none' }};
+                         ">
+                        <div style="font-size:2.5rem; margin-bottom:.6rem; line-height:1;">{{ $cat->icon() }}</div>
+                        <p style="font-weight:700; font-size:.9rem; color:{{ $selectedCategory === $cat->value ? '#e11d48' : '#1c1917' }};">
+                            {{ $cat->label() }}
+                        </p>
+                    </div>
+                @endforeach
+            </div>
+
+        {{-- STEP 2: Choose Plan --}}
+        @elseif($step === 2)
             <h2 style="font-size:1.2rem; font-weight:700; margin-bottom:1.5rem;">اختر الباقة المناسبة</h2>
 
             @error('selectedPlanId')
-                <div class="alert-error">{{ $message }}</div>
+                <div style="background:#fff1f2; border:1px solid #fda4af; color:#be123c; padding:.75rem 1rem; border-radius:8px; margin-bottom:1rem; font-size:.875rem;">{{ $message }}</div>
             @enderror
 
             <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:1rem;">
@@ -71,12 +99,12 @@
                 @endforeach
             </div>
 
-        {{-- STEP 2: Choose Template --}}
-        @elseif($step === 2)
+        {{-- STEP 3: Choose Template --}}
+        @elseif($step === 3)
             <h2 style="font-size:1.2rem; font-weight:700; margin-bottom:1.5rem;">اختر القالب</h2>
 
             @error('selectedTemplateId')
-                <div class="alert-error">{{ $message }}</div>
+                <div style="background:#fff1f2; border:1px solid #fda4af; color:#be123c; padding:.75rem 1rem; border-radius:8px; margin-bottom:1rem; font-size:.875rem;">{{ $message }}</div>
             @enderror
 
             @if($this->templates->isEmpty())
@@ -108,36 +136,42 @@
                 </div>
             @endif
 
-        {{-- STEP 3: Event Details --}}
-        @elseif($step === 3)
-            <h2 style="font-size:1.2rem; font-weight:700; margin-bottom:1.5rem;">تفاصيل الحفل</h2>
+        {{-- STEP 4: Event Details --}}
+        @elseif($step === 4)
+            @php
+                $cat = \App\Enums\EventCategory::from($selectedCategory);
+                [$primaryLabel, $secondaryLabel] = $cat->nameLabels();
+            @endphp
+            <h2 style="font-size:1.2rem; font-weight:700; margin-bottom:1.5rem;">تفاصيل المناسبة</h2>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                <div class="form-group">
-                    <label class="form-label">اسم العريس</label>
-                    <input type="text" class="form-input" wire:model="groomName" placeholder="مثال: أحمد">
+                <div class="form-group" style="{{ $cat->isCoupleEvent() ? '' : 'grid-column:1/-1;' }}">
+                    <label class="form-label">{{ $primaryLabel }}</label>
+                    <input type="text" class="form-input" wire:model="groomName" placeholder="{{ $cat->primaryPlaceholder() }}">
                     @error('groomName') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
 
+                @if($cat->isCoupleEvent())
                 <div class="form-group">
-                    <label class="form-label">اسم العروسة</label>
+                    <label class="form-label">{{ $secondaryLabel }}</label>
                     <input type="text" class="form-input" wire:model="brideName" placeholder="مثال: سارة">
                     @error('brideName') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
+                @endif
 
                 <div class="form-group">
-                    <label class="form-label">تاريخ الحفل</label>
+                    <label class="form-label">تاريخ المناسبة</label>
                     <input type="date" class="form-input" wire:model="eventDate">
                     @error('eventDate') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">وقت الحفل</label>
+                    <label class="form-label">الوقت <span style="color:#a8a29e;">(اختياري)</span></label>
                     <input type="time" class="form-input" wire:model="eventTime">
                 </div>
 
                 <div class="form-group" style="grid-column:1/-1;">
-                    <label class="form-label">اسم القاعة / الفندق</label>
+                    <label class="form-label">اسم المكان / القاعة</label>
                     <input type="text" class="form-input" wire:model="venueName" placeholder="مثال: قاعة الأميرة - فندق الشيراتون">
                     @error('venueName') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
@@ -153,8 +187,8 @@
                 </div>
             </div>
 
-        {{-- STEP 4: Publish Settings --}}
-        @elseif($step === 4)
+        {{-- STEP 5: Publish Settings --}}
+        @elseif($step === 5)
             <h2 style="font-size:1.2rem; font-weight:700; margin-bottom:1.5rem;">إعدادات النشر</h2>
 
             <div class="card" style="margin-bottom:1rem;">

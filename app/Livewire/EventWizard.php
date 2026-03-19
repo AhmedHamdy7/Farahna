@@ -2,11 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Enums\EventCategory;
 use App\Models\Event;
 use App\Models\Plan;
 use App\Models\Template;
 use App\Services\StaticInvitationService;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -14,12 +14,15 @@ class EventWizard extends Component
 {
     // ─── Wizard State ────────────────────────────────────────────
     public int    $step       = 1;
-    public int    $totalSteps = 4;
+    public int    $totalSteps = 5;
 
-    // Step 1 – Plan
+    // Step 1 – Category
+    public string $selectedCategory = 'wedding';
+
+    // Step 2 – Plan
     public ?int $selectedPlanId = null;
 
-    // Step 2 – Template
+    // Step 3 – Template
     public ?int $selectedTemplateId = null;
 
     public function mount(): void
@@ -32,12 +35,13 @@ class EventWizard extends Component
             if ($template?->is_active) {
                 $this->selectedTemplateId = $template->id;
                 $this->selectedPlanId     = $template->plan_id;
-                $this->step               = 3; // Skip to details
+                $this->selectedCategory   = $template->category->value;
+                $this->step               = 4; // Skip to details
             }
         }
     }
 
-    // Step 3 – Event Details
+    // Step 4 – Event Details
     public string $groomName    = '';
     public string $brideName    = '';
     public string $eventDate    = '';
@@ -46,7 +50,7 @@ class EventWizard extends Component
     public string $venueAddress = '';
     public string $venueMapLink = '';
 
-    // Step 4 – Publish Settings
+    // Step 5 – Publish Settings
     public string $subdomain     = '';
     public string $password      = '';
     public string $passwordHint  = '';
@@ -74,6 +78,7 @@ class EventWizard extends Component
 
         return Template::where('is_active', true)
             ->where('plan_id', $this->selectedPlanId)
+            ->where('category', $this->selectedCategory)
             ->get();
     }
 
@@ -102,7 +107,14 @@ class EventWizard extends Component
         }
     }
 
-    // ─── Plan / Template Selection ───────────────────────────────
+    // ─── Category / Plan / Template Selection ────────────────────
+    public function selectCategory(string $category): void
+    {
+        $this->selectedCategory   = $category;
+        $this->selectedPlanId     = null;
+        $this->selectedTemplateId = null;
+    }
+
     public function selectPlan(int $planId): void
     {
         $this->selectedPlanId     = $planId;
@@ -117,33 +129,57 @@ class EventWizard extends Component
     // ─── Validation ──────────────────────────────────────────────
     private function validateCurrentStep(): void
     {
+        $validCategories = implode(',', array_column(EventCategory::cases(), 'value'));
+
         match ($this->step) {
             1 => $this->validate([
+                'selectedCategory' => ['required', "in:{$validCategories}"],
+            ], [
+                'selectedCategory.required' => 'يرجى اختيار نوع المناسبة.',
+                'selectedCategory.in'       => 'نوع المناسبة غير صالح.',
+            ]),
+
+            2 => $this->validate([
                 'selectedPlanId' => ['required', 'exists:plans,id'],
             ], [
                 'selectedPlanId.required' => 'يرجى اختيار باقة.',
             ]),
 
-            2 => $this->validate([
+            3 => $this->validate([
                 'selectedTemplateId' => ['required', 'exists:templates,id'],
             ], [
                 'selectedTemplateId.required' => 'يرجى اختيار قالب.',
             ]),
 
-            3 => $this->validate([
-                'groomName'  => ['required', 'string', 'max:255'],
-                'brideName'  => ['required', 'string', 'max:255'],
-                'eventDate'  => ['required', 'date'],
-                'venueName'  => ['required', 'string', 'max:255'],
-            ], [
-                'groomName.required' => 'يرجى إدخال اسم العريس.',
-                'brideName.required' => 'يرجى إدخال اسم العروسة.',
-                'eventDate.required' => 'يرجى تحديد تاريخ الحفل.',
-                'venueName.required' => 'يرجى إدخال اسم القاعة.',
-            ]),
+            4 => $this->validateDetails(),
 
             default => null,
         };
+    }
+
+    private function validateDetails(): void
+    {
+        $cat = EventCategory::from($this->selectedCategory);
+        [$primaryLabel] = $cat->nameLabels();
+
+        $rules = [
+            'groomName' => ['required', 'string', 'max:255'],
+            'eventDate' => ['required', 'date'],
+            'venueName' => ['required', 'string', 'max:255'],
+        ];
+
+        $messages = [
+            'groomName.required' => "يرجى إدخال {$primaryLabel}.",
+            'eventDate.required' => 'يرجى تحديد تاريخ المناسبة.',
+            'venueName.required' => 'يرجى إدخال اسم المكان.',
+        ];
+
+        if ($cat->isCoupleEvent()) {
+            $rules['brideName']            = ['required', 'string', 'max:255'];
+            $messages['brideName.required'] = 'يرجى إدخال ' . $cat->nameLabels()[1] . '.';
+        }
+
+        $this->validate($rules, $messages);
     }
 
     // ─── Submit ──────────────────────────────────────────────────
@@ -161,11 +197,14 @@ class EventWizard extends Component
             'subdomain.alpha_dash' => 'الـ subdomain يقبل فقط حروف وأرقام وشرطات.',
         ]);
 
+        $cat = EventCategory::from($this->selectedCategory);
+
         $event = Event::create([
             'user_id'        => auth()->id(),
             'template_id'    => $this->selectedTemplateId,
+            'category'       => $this->selectedCategory,
             'groom_name'     => $this->groomName,
-            'bride_name'     => $this->brideName,
+            'bride_name'     => $cat->isCoupleEvent() ? $this->brideName : null,
             'event_date'     => $this->eventDate,
             'event_time'     => $this->eventTime ?: null,
             'venue_name'     => $this->venueName,

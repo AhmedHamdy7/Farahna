@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Enums\EventCategory;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Wish;
@@ -37,9 +38,15 @@ class EventController extends Controller
     {
         $this->authorizeEvent($event);
 
+        $cat = $event->category instanceof EventCategory
+            ? $event->category
+            : EventCategory::from($event->category ?? 'wedding');
+
+        [$primaryLabel, $secondaryLabel] = $cat->nameLabels();
+
         $request->validate([
             'groom_name'     => ['required', 'string', 'max:255'],
-            'bride_name'     => ['required', 'string', 'max:255'],
+            'bride_name'     => [$cat->isCoupleEvent() ? 'required' : 'nullable', 'string', 'max:255'],
             'event_date'     => ['required', 'date'],
             'event_time'     => ['nullable', 'string', 'max:10'],
             'venue_name'     => ['required', 'string', 'max:255'],
@@ -50,10 +57,10 @@ class EventController extends Controller
             'new_password'   => ['nullable', 'string', 'min:4', 'max:100'],
             'is_published'   => ['boolean'],
         ], [
-            'groom_name.required'  => 'يرجى إدخال اسم العريس.',
-            'bride_name.required'  => 'يرجى إدخال اسم العروسة.',
-            'event_date.required'  => 'يرجى تحديد تاريخ الحفل.',
-            'venue_name.required'  => 'يرجى إدخال اسم القاعة.',
+            'groom_name.required'  => "يرجى إدخال {$primaryLabel}.",
+            'bride_name.required'  => "يرجى إدخال {$secondaryLabel}.",
+            'event_date.required'  => 'يرجى تحديد تاريخ المناسبة.',
+            'venue_name.required'  => 'يرجى إدخال اسم المكان.',
             'subdomain.unique'     => 'هذا الـ subdomain محجوز، جرّب اسماً آخر.',
             'subdomain.alpha_dash' => 'الـ subdomain يقبل فقط حروف وأرقام وشرطات.',
             'venue_map_link.url'   => 'رابط الخريطة غير صحيح.',

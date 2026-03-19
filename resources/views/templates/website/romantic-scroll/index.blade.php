@@ -29,6 +29,8 @@
             --dark:   #1c1917;
             --muted:  #78716c;
             --border: #e7e5e4;
+            --pb-accent:   #e11d48;
+            --pb-btn-text: #fff;
         }
 
         html { scroll-behavior: smooth; }
@@ -562,64 +564,9 @@
 </head>
 <body>
 
-{{-- ═══════════════════════════════════════════════════
-     PREVIEW BAR — injected when $isPreview = true
-     Uses only inline styles to avoid CSS conflicts
-════════════════════════════════════════════════════ --}}
 @if($isPreview ?? false)
-<div style="
-    position: fixed; top: 0; left: 0; right: 0; height: 60px; z-index: 999999;
-    background: #18171a; border-bottom: 1px solid rgba(255,255,255,.1);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 1.25rem; gap: 1rem;
-    font-family: system-ui, -apple-system, sans-serif;
-    box-shadow: 0 4px 24px rgba(0,0,0,.4);
-">
-    {{-- Left --}}
-    <div style="display:flex; align-items:center; gap:.75rem; flex-shrink:0;">
-        <a href="{{ route('templates.index') }}" style="
-            color:#9ca3af; text-decoration:none; font-size:.82rem; font-weight:500;
-            display:inline-flex; align-items:center; gap:.35rem;
-            padding:.35rem .7rem; border-radius:7px; transition:all .2s;
-        " onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,.08)'"
-           onmouseout="this.style.color='#9ca3af';this.style.background='transparent'">
-            ← {{ app()->isLocale('ar') ? 'رجوع' : 'Back' }}
-        </a>
-
-        <div style="width:1px; height:22px; background:rgba(255,255,255,.1);"></div>
-
-        <div style="
-            display:inline-flex; align-items:center; gap:.4rem;
-            background:rgba(225,29,72,.15); border:1px solid rgba(225,29,72,.3);
-            border-radius:999px; padding:.25rem .8rem; font-size:.72rem; color:#fca5a5;
-        ">
-            <span style="width:6px;height:6px;border-radius:50%;background:#e11d48;animation:_pb 1.5s infinite;"></span>
-            {{ app()->isLocale('ar') ? 'معاينة حية' : 'Live Preview' }}
-        </div>
-
-        <div>
-            <p style="font-size:.87rem; font-weight:600; color:#fff; line-height:1.2;">{{ isset($template) ? $template->name : '' }}</p>
-            <p style="font-size:.7rem; color:#6b7280; margin-top:.1rem;">
-                {{ isset($template) ? $template->plan->name.' · '.$template->type->label() : '' }}
-            </p>
-        </div>
-    </div>
-
-    {{-- Right --}}
-    <div style="display:flex; align-items:center; gap:.6rem; flex-shrink:0;">
-        @if(app()->isLocale('ar'))
-            <a href="{{ request()->fullUrlWithQuery(['lang' => 'en']) }}" style="
-                color:#9ca3af; text-decoration:none; font-size:.78rem; font-weight:500;
-                border:1px solid rgba(255,255,255,.12); border-radius:7px; padding:.35rem .7rem;
-                transition:all .2s;
-            " onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#9ca3af'">🌐 EN</a>
-        @else
-            <a href="{{ request()->fullUrlWithQuery(['lang' => 'ar']) }}" style="
-                color:#9ca3af; text-decoration:none; font-size:.78rem; font-weight:500;
-                border:1px solid rgba(255,255,255,.12); border-radius:7px; padding:.35rem .7rem;
-                transition:all .2s;
-            " onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#9ca3af'">🌐 عربي</a>
-        @endif
+@include('partials.preview-bar')
+@endif
 
         @auth
             <a href="{{ route('customer.events.create') }}?template={{ isset($template) ? $template->id : '' }}" style="

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EventCategory;
 use App\Enums\TemplateType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,7 @@ class Template extends Model
     protected $fillable = [
         'name',
         'type',
+        'category',
         'thumbnail',
         'slug',
         'plan_id',
@@ -23,6 +25,7 @@ class Template extends Model
     {
         return [
             'type'          => TemplateType::class,
+            'category'      => EventCategory::class,
             'config_schema' => 'array',
             'is_active'     => 'boolean',
         ];

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EventCategory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,7 @@ class Event extends Model
     protected $fillable = [
         'user_id',
         'template_id',
+        'category',
         'groom_name',
         'bride_name',
         'event_date',
@@ -33,6 +35,7 @@ class Event extends Model
     protected function casts(): array
     {
         return [
+            'category'     => EventCategory::class,
             'event_date'   => 'date',
             'expires_at'   => 'datetime',
             'custom_data'  => 'array',
@@ -81,9 +84,22 @@ class Event extends Model
         return route('invitation.show', $this);
     }
 
+    public function displayTitle(): string
+    {
+        $cat = $this->category instanceof EventCategory
+            ? $this->category
+            : EventCategory::from($this->category ?? 'wedding');
+
+        if ($cat->isCoupleEvent() && $this->bride_name) {
+            return "{$this->groom_name} & {$this->bride_name}";
+        }
+
+        return $this->groom_name;
+    }
+
     public function coupleName(): string
     {
-        return "{$this->groom_name} & {$this->bride_name}";
+        return $this->displayTitle();
     }
 
     public function isPasswordProtected(): bool

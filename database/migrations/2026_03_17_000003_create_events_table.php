@@ -12,8 +12,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('template_id')->constrained()->cascadeOnDelete();
+            $table->string('category')->default('wedding');
             $table->string('groom_name');
-            $table->string('bride_name');
+            $table->string('bride_name')->nullable();
             $table->date('event_date');
             $table->time('event_time')->nullable();
             $table->string('venue_name');

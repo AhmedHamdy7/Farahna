@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->enum('type', ['static', 'website']);
+            $table->string('category')->default('wedding');
             $table->string('thumbnail')->nullable();
             $table->string('slug')->unique();
             $table->foreignId('plan_id')->constrained()->cascadeOnDelete();

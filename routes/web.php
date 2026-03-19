@@ -16,36 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/templates', [HomeController::class, 'templates'])->name('templates.index');
 Route::get('/templates/{template}/preview', [HomeController::class, 'preview'])->name('templates.preview');
-Route::get('/templates/{template}/preview-frame', function (\App\Models\Template $template) {
-    $isAr = app()->isLocale('ar');
-    $dummyEvent = new \App\Models\Event([
-        'groom_name'    => $isAr ? 'أحمد'                          : 'James',
-        'bride_name'    => $isAr ? 'سارة'                          : 'Emily',
-        'event_date'    => now()->addMonths(3),
-        'event_time'    => '20:00',
-        'venue_name'    => $isAr ? 'قاعة الأميرة – فندق الشيراتون' : 'The Grand Ballroom – Sheraton Hotel',
-        'venue_address' => $isAr ? 'القاهرة، مصر الجديدة'          : 'Cairo, Egypt',
-        'venue_map_link'=> null,
-        'subdomain'     => null,
-        'is_published'  => true,
-        'custom_data'   => null,
-    ]);
-    $dummyEvent->setRelation('template', $template);
-    $dummyEvent->setRelation('gallery', collect());
-    $dummyEvent->setRelation('approvedWishes', collect($isAr ? [
-        (object)['guest_name' => 'محمد علي',    'message' => 'ألف مبروك! ربنا يتمم عليكم بالسعادة 💕', 'created_at' => now()->subHours(2)],
-        (object)['guest_name' => 'فاطمة أحمد', 'message' => 'يارب يكون زواجكم مبارك 🌸',              'created_at' => now()->subHours(5)],
-    ] : [
-        (object)['guest_name' => 'Sarah & Tom',  'message' => 'Wishing you a lifetime of love and happiness! 💕', 'created_at' => now()->subHours(2)],
-        (object)['guest_name' => 'The Johnsons', 'message' => 'So happy for you both! Congrats 🌸',               'created_at' => now()->subHours(5)],
-    ]));
-    $dummyEvent->setRelation('rsvpResponses', collect());
-
-    return view("templates.website.{$template->slug}.index", [
-        'event'      => $dummyEvent,
-        'isPreview'  => true,
-    ]);
-})->name('templates.preview-frame');
+Route::get('/templates/{template}/preview-frame', [HomeController::class, 'previewFrame'])->name('templates.preview-frame');
 
 // ─── GUEST AUTH ───────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
