@@ -10,6 +10,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ $event->groom_name }} – عيد ميلاد سعيد 🎉</title>
+@include('partials.og-meta')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
@@ -59,7 +60,7 @@ body {
     animation: confettiFall linear infinite;
 }
 
-@keyframes confettiFall {
+@@keyframes confettiFall {
     0%   { transform: translateY(-30px) rotate(0deg); opacity: 1; }
     100% { transform: translateY(110vh) rotate(720deg); opacity: .3; }
 }
@@ -82,7 +83,7 @@ body {
     margin-bottom: 1rem;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,.15));
 }
-@keyframes floatBalloon {
+@@keyframes floatBalloon {
     0%,100% { transform: translateY(0) rotate(-5deg); }
     50%      { transform: translateY(-20px) rotate(5deg); }
 }
@@ -97,7 +98,7 @@ body {
     margin-bottom: 1.5rem;
     animation: spinBadge 8s linear infinite;
 }
-@keyframes spinBadge { to { transform: rotate(360deg); } }
+@@keyframes spinBadge { to { transform: rotate(360deg); } }
 .hero-age-inner {
     animation: spinBadge 8s linear infinite reverse;
 }
@@ -141,7 +142,7 @@ body {
     animation: spin 10s linear infinite;
     user-select: none; pointer-events: none;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@@keyframes spin { to { transform: rotate(360deg); } }
 .hero-deco.d1 { top: 8%; left: 5%; animation-duration: 12s; font-size: 2.5rem; }
 .hero-deco.d2 { top: 15%; right: 8%; animation-direction: reverse; animation-duration: 9s; }
 .hero-deco.d3 { bottom: 20%; left: 10%; animation-duration: 15s; font-size: 2rem; }
@@ -160,7 +161,7 @@ body {
     font-size: 2.5rem; display: block; margin-bottom: .5rem;
     animation: bounce 2s ease-in-out infinite;
 }
-@keyframes bounce {
+@@keyframes bounce {
     0%,100% { transform: translateY(0); }
     50%      { transform: translateY(-8px); }
 }
@@ -370,7 +371,7 @@ body {
     font-weight:600; font-size:.9rem; color:var(--dark);
     animation:slideIn .4s ease;
 }
-@keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:none} }
+@@keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:none} }
 
 @media(max-width:640px){
     .countdown-grid { grid-template-columns: repeat(2, 1fr); }

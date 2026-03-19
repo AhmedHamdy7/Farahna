@@ -41,6 +41,7 @@ class Event extends Model
             'custom_data'  => 'array',
             'is_published' => 'boolean',
             'password'     => 'hashed',
+            'views_count'  => 'integer',
         ];
     }
 

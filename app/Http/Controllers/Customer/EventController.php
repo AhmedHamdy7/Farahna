@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Enums\EventCategory;
+use App\Enums\RsvpStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Wish;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Response as ResponseFacade;
 use Illuminate\View\View;
+use SimpleSoftware\QrCode\Facades\QrCode;
 
 class EventController extends Controller
 {
@@ -112,6 +115,55 @@ class EventController extends Controller
         $wish->delete();
 
         return back();
+    }
+
+    public function qrCode(Event $event): Response
+    {
+        $this->authorizeEvent($event);
+
+        $svg = QrCode::format('svg')
+            ->size(300)
+            ->errorCorrection('H')
+            ->generate($event->invitationUrl());
+
+        return response($svg, 200, [
+            'Content-Type'        => 'image/svg+xml',
+            'Content-Disposition' => 'inline; filename="qr-' . $event->id . '.svg"',
+        ]);
+    }
+
+    public function exportRsvp(Event $event): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $this->authorizeEvent($event);
+
+        $event->load('rsvpResponses');
+
+        $statusLabels = [
+            RsvpStatus::Yes->value   => 'حاضر',
+            RsvpStatus::No->value    => 'غائب',
+            RsvpStatus::Maybe->value => 'ربما',
+        ];
+
+        $filename = 'rsvp-' . $event->id . '-' . now()->format('Ymd') . '.csv';
+
+        return ResponseFacade::streamDownload(function () use ($event, $statusLabels) {
+            $handle = fopen('php://output', 'w');
+            // UTF-8 BOM for Excel Arabic support
+            fputs($handle, "\xEF\xBB\xBF");
+            fputcsv($handle, ['الاسم', 'الحضور', 'عدد المرافقين', 'ملاحظات', 'التاريخ']);
+
+            foreach ($event->rsvpResponses as $rsvp) {
+                fputcsv($handle, [
+                    $rsvp->guest_name,
+                    $statusLabels[$rsvp->attending->value] ?? $rsvp->attending->value,
+                    $rsvp->guests_count ?? 1,
+                    $rsvp->notes ?? '',
+                    $rsvp->created_at->format('d/m/Y H:i'),
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     private function authorizeEvent(Event $event): void

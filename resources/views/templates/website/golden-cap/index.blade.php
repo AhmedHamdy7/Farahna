@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $event->displayTitle() }} – حفل التخرج</title>
+    @include('partials.og-meta')
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -31,24 +32,24 @@
 
 
         /* ─── ANIMATIONS ─── */
-        @keyframes cap-fly {
+        @@keyframes cap-fly {
             0%   { transform:translate(var(--sx,0),110vh) rotate(var(--r,0deg)); opacity:1; }
             80%  { opacity:1; }
             100% { transform:translate(var(--ex,20px),-10vh) rotate(var(--r2,360deg)); opacity:0; }
         }
-        @keyframes diploma-unfurl {
+        @@keyframes diploma-unfurl {
             from { transform:scaleY(0) translateY(-30px); opacity:0; }
             to   { transform:scaleY(1) translateY(0); opacity:1; }
         }
-        @keyframes gold-shimmer {
+        @@keyframes gold-shimmer {
             0%,100% { background-position:0% 50%; }
             50%     { background-position:100% 50%; }
         }
-        @keyframes float-slow {
+        @@keyframes float-slow {
             0%,100% { transform:translateY(0); }
             50%     { transform:translateY(-12px); }
         }
-        @keyframes star-pop {
+        @@keyframes star-pop {
             0%   { transform:scale(0) rotate(-30deg); opacity:0; }
             60%  { transform:scale(1.2) rotate(10deg); opacity:1; }
             100% { transform:scale(1) rotate(0deg); opacity:1; }

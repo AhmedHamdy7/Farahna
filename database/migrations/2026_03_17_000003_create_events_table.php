@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('password_hint')->nullable();
             $table->boolean('is_published')->default(false);
             $table->timestamp('expires_at')->nullable();
+            $table->unsignedBigInteger('views_count')->default(0);
             $table->timestamps();
         });
     }

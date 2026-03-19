@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $event->displayTitle() }} – ليلة الكازينو</title>
+    @include('partials.og-meta')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.10/cdn.min.js" defer></script>
@@ -40,24 +41,24 @@
         }
 
         /* ─── ANIMATIONS ─── */
-        @keyframes card-shuffle {
+        @@keyframes card-shuffle {
             0%   { transform:rotate(-15deg) translateY(60px); opacity:0; }
             100% { transform:rotate(var(--r,0deg)) translateY(0); opacity:1; }
         }
-        @keyframes chip-spin { from{transform:rotateY(0)} to{transform:rotateY(360deg)} }
-        @keyframes neon-flicker {
+        @@keyframes chip-spin { from{transform:rotateY(0)} to{transform:rotateY(360deg)} }
+        @@keyframes neon-flicker {
             0%,19%,21%,23%,25%,54%,56%,100% { opacity:1; text-shadow:0 0 10px var(--gold),0 0 30px var(--gold-d); }
             20%,24%,55% { opacity:.7; text-shadow:none; }
         }
-        @keyframes slot-spin {
+        @@keyframes slot-spin {
             0%   { transform:translateY(0); }
             100% { transform:translateY(-300px); }
         }
-        @keyframes gold-shimmer {
+        @@keyframes gold-shimmer {
             0%,100% { background-position:0% 50%; }
             50%     { background-position:100% 50%; }
         }
-        @keyframes card-float {
+        @@keyframes card-float {
             0%,100% { transform:rotate(var(--r,0deg)) translateY(0); }
             50%     { transform:rotate(var(--r,0deg)) translateY(-10px); }
         }

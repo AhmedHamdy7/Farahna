@@ -10,6 +10,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ $event->groom_name }} & {{ $event->bride_name }} – خطوبة مباركة 💍</title>
+@include('partials.og-meta')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
 
@@ -58,7 +59,7 @@ body {
     border-radius: 50% 0 50% 0;
     background: linear-gradient(135deg, rgba(201,116,138,.5), rgba(240,218,228,.6));
 }
-@keyframes petalFall {
+@@keyframes petalFall {
     0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
     10%  { opacity: .8; }
     90%  { opacity: .4; }
@@ -86,7 +87,7 @@ body {
 .hero-ring:nth-child(1) { width: 300px; height: 300px; animation-delay: 0s; }
 .hero-ring:nth-child(2) { width: 480px; height: 480px; animation-delay: 1s; }
 .hero-ring:nth-child(3) { width: 660px; height: 660px; animation-delay: 2s; }
-@keyframes expandRing {
+@@keyframes expandRing {
     0%   { opacity: .6; transform: scale(.9); }
     100% { opacity: 0;  transform: scale(1.1); }
 }
@@ -98,7 +99,7 @@ body {
     filter: drop-shadow(0 8px 20px rgba(201,116,138,.4));
     position: relative; z-index: 2;
 }
-@keyframes twinkle {
+@@keyframes twinkle {
     0%,100% { transform: scale(1) rotate(-5deg); }
     50%      { transform: scale(1.1) rotate(5deg); }
 }
@@ -151,7 +152,7 @@ body {
     animation: sway 6s ease-in-out infinite;
     user-select: none; pointer-events: none;
 }
-@keyframes sway {
+@@keyframes sway {
     0%,100% { transform: rotate(-10deg); }
     50%      { transform: rotate(10deg); }
 }
@@ -393,7 +394,7 @@ body {
     font-weight:600; font-size:.9rem; color:var(--dark);
     animation: slideIn .4s ease;
 }
-@keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:none} }
+@@keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:none} }
 
 @media(max-width:640px){
     .countdown-grid { grid-template-columns: repeat(2,1fr); }

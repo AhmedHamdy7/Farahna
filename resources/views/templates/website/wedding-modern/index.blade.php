@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $event->coupleName() }} – دعوة زفاف</title>
 
-    <meta property="og:title"       content="{{ $event->coupleName() }}">
-    <meta property="og:description" content="{{ $event->event_date->format('d F Y') }} · {{ $event->venue_name }}">
-    <meta property="og:type"        content="website">
-
+    @include('partials.og-meta')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Tajawal:wght@300;400;500;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
@@ -113,8 +110,8 @@
         }
         .hero-date-strip .dot { color:var(--gold-l); }
 
-        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-        @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+        @@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+        @@keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
 
         /* ─── GOLD RULE ─── */
         .gold-rule {

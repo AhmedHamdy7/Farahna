@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $event->coupleName() }} – {{ __('invitation.hero_label') }}</title>
 
-    <meta property="og:title"       content="{{ $event->coupleName() }} – {{ __('invitation.hero_label') }}">
-    <meta property="og:description" content="{{ $event->event_date->format('d F Y') }} · {{ $event->venue_name }}">
-    <meta property="og:type"        content="website">
-
+    @include('partials.og-meta')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
 
@@ -87,7 +84,7 @@
             opacity: 0;
             animation: floatHeart linear infinite;
         }
-        @keyframes floatHeart {
+        @@keyframes floatHeart {
             0%   { transform: translateY(110%) rotate(0deg); opacity: .7; }
             100% { transform: translateY(-10%) rotate(360deg); opacity: 0; }
         }
@@ -134,7 +131,7 @@
             margin: 1.5rem auto;
             animation: expandWidth .8s .3s ease both;
         }
-        @keyframes expandWidth {
+        @@keyframes expandWidth {
             from { transform: scaleX(0); opacity: 0; }
             to   { transform: scaleX(1); opacity: 1; }
         }
@@ -145,7 +142,7 @@
             animation: fadeSlideUp .8s .4s ease both;
         }
 
-        @keyframes fadeSlideUp {
+        @@keyframes fadeSlideUp {
             from { opacity: 0; transform: translateY(28px); }
             to   { opacity: 1; transform: translateY(0); }
         }
@@ -194,7 +191,7 @@
             animation: bounce 2s 1.5s infinite both;
         }
 
-        @keyframes bounce {
+        @@keyframes bounce {
             0%, 100% { transform: translateX(-50%) translateY(0); }
             50%       { transform: translateX(-50%) translateY(8px); }
         }
@@ -567,31 +564,6 @@
 
 @if($isPreview ?? false)
 @include('partials.preview-bar')
-@endif
-
-        @auth
-            <a href="{{ route('customer.events.create') }}?template={{ isset($template) ? $template->id : '' }}" style="
-                background:#e11d48; color:#fff; text-decoration:none; border-radius:8px;
-                padding:.5rem 1.1rem; font-size:.85rem; font-weight:600;
-                display:inline-flex; align-items:center; gap:.4rem;
-                transition:background .2s;
-            " onmouseover="this.style.background='#be123c'" onmouseout="this.style.background='#e11d48'">
-                {{ app()->isLocale('ar') ? 'استخدم هذا القالب ←' : 'Use This Template →' }}
-            </a>
-        @else
-            <a href="{{ route('register') }}?template={{ isset($template) ? $template->id : '' }}" style="
-                background:#e11d48; color:#fff; text-decoration:none; border-radius:8px;
-                padding:.5rem 1.1rem; font-size:.85rem; font-weight:600;
-                display:inline-flex; align-items:center; gap:.4rem;
-                transition:background .2s;
-            " onmouseover="this.style.background='#be123c'" onmouseout="this.style.background='#e11d48'">
-                {{ app()->isLocale('ar') ? 'ابدأ مجاناً ←' : 'Get Started Free →' }}
-            </a>
-        @endauth
-    </div>
-</div>
-<style>@keyframes _pb { 0%,100%{opacity:1}50%{opacity:.3} }</style>
-<div class="preview-spacer"></div>
 @endif
 
 {{-- ═══════════════════════════════════════════════

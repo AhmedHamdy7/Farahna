@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $event->groom_name }} – عيد ميلاد سعيد</title>
 
-    <meta property="og:title"       content="{{ $event->groom_name }} – عيد ميلاد سعيد">
-    <meta property="og:description" content="{{ $event->event_date->format('d F Y') }} · {{ $event->venue_name }}">
-    <meta property="og:type"        content="website">
-
+    @include('partials.og-meta')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Tajawal:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
@@ -57,7 +54,7 @@
             animation: sparkle-float var(--dur, 6s) var(--delay, 0s) infinite ease-in-out;
             opacity:0;
         }
-        @keyframes sparkle-float {
+        @@keyframes sparkle-float {
             0%   { opacity:0; transform:translateY(0) scale(0); }
             15%  { opacity:1; transform:translateY(-20px) scale(1); }
             85%  { opacity:.6; transform:translateY(-80px) scale(.8); }
@@ -70,7 +67,7 @@
             font-size:var(--size, 14px);
             opacity:0;
         }
-        @keyframes star-twinkle {
+        @@keyframes star-twinkle {
             0%,100% { opacity:0; transform:scale(0) rotate(0deg); }
             50%      { opacity:1; transform:scale(1) rotate(180deg); }
         }
@@ -88,7 +85,7 @@
             width:0;
             transition:width .2s;
         }
-        @keyframes progress-shimmer {
+        @@keyframes progress-shimmer {
             0%   { background-position:100% 0; }
             100% { background-position:-100% 0; }
         }
@@ -128,7 +125,7 @@
             animation:ring-pulse 3s ease-in-out infinite;
             opacity:0; animation:fadeIn .8s .5s forwards, ring-pulse 3s 1.3s ease-in-out infinite;
         }
-        @keyframes ring-pulse {
+        @@keyframes ring-pulse {
             0%,100% { box-shadow:0 0 40px rgba(201,162,39,.1), inset 0 0 30px rgba(201,162,39,.04); }
             50%      { box-shadow:0 0 80px rgba(201,162,39,.25), inset 0 0 50px rgba(201,162,39,.08); }
         }
@@ -163,9 +160,9 @@
             border-radius:2px;
             opacity:0; animation:fadeInUp .8s 1.1s forwards;
         }
-        @keyframes fadeIn     { to { opacity:1; } }
-        @keyframes fadeInDown { from { opacity:0; transform:translateY(-15px); } to { opacity:1; transform:none; } }
-        @keyframes fadeInUp   { from { opacity:0; transform:translateY(15px);  } to { opacity:1; transform:none; } }
+        @@keyframes fadeIn     { to { opacity:1; } }
+        @@keyframes fadeInDown { from { opacity:0; transform:translateY(-15px); } to { opacity:1; transform:none; } }
+        @@keyframes fadeInUp   { from { opacity:0; transform:translateY(15px);  } to { opacity:1; transform:none; } }
 
         /* ─── GOLD DIVIDER ─── */
         .gold-divider {

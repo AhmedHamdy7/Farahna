@@ -255,6 +255,62 @@ class DatabaseSeeder extends Seeder
                     'is_active'     => true,
                 ]
             );
+
+            // Rose Garden — botanical garden party, masonry gallery + calendar widget
+            Template::firstOrCreate(
+                ['slug' => 'rose-garden'],
+                [
+                    'name'          => 'Rose Garden',
+                    'type'          => TemplateType::Website,
+                    'category'      => EventCategory::Engagement->value,
+                    'slug'          => 'rose-garden',
+                    'plan_id'       => $premiumPlan->id,
+                    'config_schema' => null,
+                    'is_active'     => true,
+                ]
+            );
+
+            // Heritage — traditional Arabic/Islamic wedding
+            Template::firstOrCreate(
+                ['slug' => 'heritage'],
+                [
+                    'name'          => 'Heritage',
+                    'type'          => TemplateType::Website,
+                    'category'      => EventCategory::Wedding->value,
+                    'slug'          => 'heritage',
+                    'plan_id'       => $premiumPlan->id,
+                    'config_schema' => null,
+                    'is_active'     => true,
+                ]
+            );
+
+            // Life Film — cinematic wedding, film strip gallery + cinema RSVP ticket
+            Template::firstOrCreate(
+                ['slug' => 'life-film'],
+                [
+                    'name'          => 'Life Film',
+                    'type'          => TemplateType::Website,
+                    'category'      => EventCategory::Wedding->value,
+                    'slug'          => 'life-film',
+                    'plan_id'       => $premiumPlan->id,
+                    'config_schema' => null,
+                    'is_active'     => true,
+                ]
+            );
+
+            // Graduate — graduation celebration with academic timeline
+            Template::firstOrCreate(
+                ['slug' => 'graduate'],
+                [
+                    'name'          => 'Graduate',
+                    'type'          => TemplateType::Website,
+                    'category'      => EventCategory::Graduation->value,
+                    'slug'          => 'graduate',
+                    'plan_id'       => $premiumPlan->id,
+                    'config_schema' => null,
+                    'is_active'     => true,
+                ]
+            );
         }
     }
 }

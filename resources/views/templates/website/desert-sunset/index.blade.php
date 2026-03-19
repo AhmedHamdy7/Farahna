@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $event->displayTitle() }} – غروب الصحراء</title>
+    @include('partials.og-meta')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.10/cdn.min.js" defer></script>
@@ -32,26 +33,26 @@
         body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--dark); overflow-x:hidden; }
 
         /* ─── ANIMATIONS ─── */
-        @keyframes drift {
+        @@keyframes drift {
             0%   { transform:translateX(0) translateY(0); }
             50%  { transform:translateX(20px) translateY(-8px); }
             100% { transform:translateX(0) translateY(0); }
         }
-        @keyframes sun-pulse {
+        @@keyframes sun-pulse {
             0%,100% { box-shadow:0 0 40px rgba(247,183,51,.3),0 0 80px rgba(196,98,45,.2); }
             50%     { box-shadow:0 0 70px rgba(247,183,51,.6),0 0 140px rgba(196,98,45,.4); }
         }
-        @keyframes float-in {
+        @@keyframes float-in {
             from { transform:translateY(40px); opacity:0; }
             to   { transform:translateY(0); opacity:1; }
         }
-        @keyframes dust-float {
+        @@keyframes dust-float {
             0%   { transform:translate(0,0) rotate(0deg); opacity:0; }
             10%  { opacity:.6; }
             90%  { opacity:.3; }
             100% { transform:translate(var(--dx,30px),var(--dy,-60px)) rotate(180deg); opacity:0; }
         }
-        @keyframes shimmer-h {
+        @@keyframes shimmer-h {
             0%,100% { background-position:0% 50%; }
             50%     { background-position:100% 50%; }
         }

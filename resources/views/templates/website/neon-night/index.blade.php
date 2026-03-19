@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $event->coupleName() }} – ليل النيون</title>
-    <meta property="og:title" content="{{ $event->coupleName() }}">
-    <meta property="og:description" content="{{ $event->event_date->format('d F Y') }} · {{ $event->venue_name }}">
-
+    @include('partials.og-meta')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.10/cdn.min.js" defer></script>
@@ -33,27 +31,27 @@
 
 
         /* ─── ANIMATIONS ─── */
-        @keyframes flicker {
+        @@keyframes flicker {
             0%,18%,22%,25%,53%,57%,100% { opacity:1; }
             19%,24%,55% { opacity:.35; }
         }
-        @keyframes flicker2 {
+        @@keyframes flicker2 {
             0%,91%,95%,100% { opacity:1; }
             92%,94% { opacity:.25; }
         }
-        @keyframes neon-pulse {
+        @@keyframes neon-pulse {
             0%,100% { box-shadow:0 0 8px var(--c),0 0 20px var(--c),0 0 40px var(--c); }
             50%     { box-shadow:0 0 4px var(--c),0 0 10px var(--c),0 0 20px var(--c); }
         }
-        @keyframes grid-scroll {
+        @@keyframes grid-scroll {
             from { background-position:0 0; }
             to   { background-position:60px 60px; }
         }
-        @keyframes scanline {
+        @@keyframes scanline {
             from { transform:translateY(-100%); }
             to   { transform:translateY(120vh); }
         }
-        @keyframes ticker {
+        @@keyframes ticker {
             from { transform:translateX(0); }
             to   { transform:translateX(-50%); }
         }

@@ -30,13 +30,18 @@
                     📍 {{ $event->venue_name }}
                 </p>
             </div>
-            <span style="
-                padding:.4rem 1rem; border-radius:999px; font-size:.8rem; font-weight:600;
-                background:{{ $event->is_published ? '#dcfce7' : '#fef9c3' }};
-                color:{{ $event->is_published ? '#166534' : '#854d0e' }};
-            ">
-                {{ $event->is_published ? '✓ منشور' : '○ مسودة' }}
-            </span>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:.5rem;">
+                <span style="
+                    padding:.4rem 1rem; border-radius:999px; font-size:.8rem; font-weight:600;
+                    background:{{ $event->is_published ? '#dcfce7' : '#fef9c3' }};
+                    color:{{ $event->is_published ? '#166534' : '#854d0e' }};
+                ">
+                    {{ $event->is_published ? '✓ منشور' : '○ مسودة' }}
+                </span>
+                <span style="font-size:.8rem; color:#78716c;">
+                    👁 {{ number_format($event->views_count) }} مشاهدة
+                </span>
+            </div>
             <a href="{{ route('customer.events.edit', $event) }}"
                class="btn btn-outline" style="font-size:.85rem; padding:.4rem 1rem;">
                 ✏️ تعديل
@@ -66,6 +71,16 @@
                         🔒 محمية بكلمة مرور @if($event->password_hint) · تلميح: {{ $event->password_hint }} @endif
                     </p>
                 @endif
+                <div style="display:flex; gap:.75rem; margin-top:1rem; flex-wrap:wrap;">
+                    <a href="{{ route('customer.events.qr', $event) }}" target="_blank"
+                       class="btn btn-outline" style="font-size:.85rem; padding:.45rem 1rem;">
+                        📱 QR Code
+                    </a>
+                    <a href="{{ route('customer.events.rsvp.export', $event) }}"
+                       class="btn btn-outline" style="font-size:.85rem; padding:.45rem 1rem;">
+                        📥 تصدير RSVP
+                    </a>
+                </div>
             </div>
 
             {{-- Stats --}}

@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $event->coupleName() }} – ليلة الأحلام</title>
-    <meta property="og:title" content="{{ $event->coupleName() }}">
-    <meta property="og:description" content="{{ $event->event_date->format('d F Y') }} · {{ $event->venue_name }}">
-
+    @include('partials.og-meta')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.10/cdn.min.js" defer></script>
@@ -52,7 +50,7 @@
             background:#fff;
             animation:twinkle var(--t,3s) var(--d,0s) infinite;
         }
-        @keyframes twinkle {
+        @@keyframes twinkle {
             0%,100% { opacity:var(--min,.1); transform:scale(1); }
             50%      { opacity:1; transform:scale(1.3); }
         }
@@ -104,7 +102,7 @@
             display:flex; align-items:center; justify-content:center;
             font-size:2.5rem;
         }
-        @keyframes orbit-spin { to { transform:rotate(360deg); } }
+        @@keyframes orbit-spin { to { transform:rotate(360deg); } }
 
         .hero-names {
             font-family:'Cinzel', serif;
@@ -131,8 +129,8 @@
         }
         .hero-date-row .sep { color:var(--violet-l); }
 
-        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-        @keyframes fadeInUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+        @@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+        @@keyframes fadeInUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
 
         /* ─── DIVIDER ─── */
         .cosmic-divider {
