@@ -103,13 +103,13 @@ class HomeController extends Controller
         $dummyEvent->setRelation('gallery', collect());
 
         $wishes = $isAr ? [
-            (object)['guest_name' => 'محمد علي',   'message' => 'ألف مبروك! ربنا يتمم عليكم بالسعادة والهنا 💕', 'created_at' => now()->subHours(2)],
-            (object)['guest_name' => 'فاطمة أحمد', 'message' => 'يارب يكون مبارك وتعيشوا في سعادة دايمة 🌸',    'created_at' => now()->subHours(5)],
-            (object)['guest_name' => 'كريم وسارة', 'message' => 'أجمل التهاني! ربنا يسعدكم دايماً ❤️',           'created_at' => now()->subHours(12)],
+            (object)['id' => 1, 'guest_name' => 'محمد علي',   'message' => 'ألف مبروك! ربنا يتمم عليكم بالسعادة والهنا 💕', 'created_at' => now()->subHours(2)],
+            (object)['id' => 2, 'guest_name' => 'فاطمة أحمد', 'message' => 'يارب يكون مبارك وتعيشوا في سعادة دايمة 🌸',    'created_at' => now()->subHours(5)],
+            (object)['id' => 3, 'guest_name' => 'كريم وسارة', 'message' => 'أجمل التهاني! ربنا يسعدكم دايماً ❤️',           'created_at' => now()->subHours(12)],
         ] : [
-            (object)['guest_name' => 'Sarah & Tom',  'message' => 'Wishing you a lifetime of love and happiness! 💕',      'created_at' => now()->subHours(2)],
-            (object)['guest_name' => 'The Johnsons', 'message' => 'So happy for you both! Congrats on this beautiful day 🌸', 'created_at' => now()->subHours(5)],
-            (object)['guest_name' => 'Emily Watson', 'message' => 'May your love grow stronger every year ❤️',               'created_at' => now()->subHours(12)],
+            (object)['id' => 1, 'guest_name' => 'Sarah & Tom',  'message' => 'Wishing you a lifetime of love and happiness! 💕',      'created_at' => now()->subHours(2)],
+            (object)['id' => 2, 'guest_name' => 'The Johnsons', 'message' => 'So happy for you both! Congrats on this beautiful day 🌸', 'created_at' => now()->subHours(5)],
+            (object)['id' => 3, 'guest_name' => 'Emily Watson', 'message' => 'May your love grow stronger every year ❤️',               'created_at' => now()->subHours(12)],
         ];
 
         $dummyEvent->setRelation('approvedWishes', collect($wishes));

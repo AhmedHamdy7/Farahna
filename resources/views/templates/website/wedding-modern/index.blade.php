@@ -1038,7 +1038,7 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       @php
         $wi = mb_strtoupper(collect(preg_split('/\s+/', $w->guest_name))->take(2)->map(fn($p)=>mb_substr($p,0,1))->join(''));
       @endphp
-      <div class="wish-item wm-r" data-wish-id="{{ $w->id }}">
+      <div class="wish-item wm-r" data-wish-id="{{ $w->id ?? 0 }}">
         <div class="wi-avatar">{{ $wi ?: '?' }}</div>
         <div class="wi-body">
           <span class="wi-name">{{ $w->guest_name }}</span>
