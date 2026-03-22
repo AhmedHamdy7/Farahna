@@ -11,6 +11,12 @@ class InvitationController extends Controller
 {
     public function show(Event $event): View
     {
+        // Language switch via ?lang=ar|en
+        $lang = request('lang');
+        if (in_array($lang, ['ar', 'en'])) {
+            app()->setLocale($lang);
+        }
+
         $event->load([
             'template',
             'gallery',

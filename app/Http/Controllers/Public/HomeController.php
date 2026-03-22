@@ -29,6 +29,11 @@ class HomeController extends Controller
 
     public function preview(Template $template): View
     {
+        $lang = request('lang');
+        if (in_array($lang, ['ar', 'en'])) {
+            app()->setLocale($lang);
+        }
+
         $dummyEvent = $this->makeDummyEvent($template);
 
         // Static template: render in a centered wrapper page

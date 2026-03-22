@@ -4,7 +4,7 @@
   Variables available: $template (optional), $event
   Hidden automatically when $isFrame = true (phone mockup mode)
 --}}
-@if(!($isFrame ?? false))
+@if(($isPreview ?? false) && !($isFrame ?? false))
 @php
   $tpl     = $template ?? ($event->relationLoaded('template') ? $event->template : null);
   $tplName = $tpl?->name ?? 'معاينة';
@@ -132,19 +132,18 @@
     <div class="pb-spacer"></div>
 
     @auth
-        {{-- Logged in: change + customize --}}
+        {{-- Logged in: change template OR go straight to wizard step 4 with this template --}}
         <a href="{{ route('templates.index') }}" class="pb-outline">تغيير القالب</a>
-        <a href="{{ route('customer.dashboard') }}" class="pb-cta">
-            تخصيص
+        <a href="{{ route('customer.events.create') }}{{ $tpl ? '?template=' . $tpl->id : '' }}" class="pb-cta">
+            ابدأ التخصيص
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
         </a>
     @else
-        {{-- Guest: CTA to register --}}
-        <a href="{{ route('register') }}" class="pb-cta">
+        {{-- Guest: register then auto-redirect to wizard with template pre-selected --}}
+        <a href="{{ route('register') }}{{ $tpl ? '?template=' . $tpl->id : '' }}" class="pb-cta">
             ابدأ مجاناً
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
         </a>
     @endauth
 </div>
-<div style="height:58px"></div>
-@endif
+<div style="height:58px"></div>@endif

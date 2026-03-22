@@ -104,6 +104,13 @@
                 @error('venue_map_link')<p class="form-error">{{ $message }}</p>@enderror
             </div>
 
+            <div class="form-group">
+                <label class="form-label">👗 كود اللبس <span style="color:#a8a29e; font-weight:400;">(اختياري)</span></label>
+                <input type="text" name="dress_code" class="form-input"
+                       value="{{ old('dress_code', $event->custom_data['dress_code'] ?? '') }}"
+                       placeholder="مثال: أنيق رسمي – ألوان فاتحة">
+            </div>
+
             <div class="form-group" style="margin-bottom:0;">
                 <label class="form-label">🎵 موسيقى خلفية <span style="color:#a8a29e; font-weight:400;">(اختياري — رابط MP3)</span></label>
                 <input type="url" name="music_url" class="form-input @error('music_url') border-red @enderror"

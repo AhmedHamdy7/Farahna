@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Response as ResponseFacade;
 use Illuminate\View\View;
-use SimpleSoftware\QrCode\Facades\QrCode;
 
 class EventController extends Controller
 {
@@ -80,7 +79,10 @@ class EventController extends Controller
             'venue_map_link' => $request->venue_map_link ?: null,
             'custom_data'    => array_filter(array_merge(
                 $event->custom_data ?? [],
-                ['music_url' => $request->music_url ?: null]
+                [
+                    'music_url'  => $request->music_url ?: null,
+                    'dress_code' => $request->dress_code ?: null,
+                ]
             )),
             'subdomain'      => $request->subdomain ?: null,
             'password_hint'  => $request->password_hint ?: null,
@@ -117,19 +119,14 @@ class EventController extends Controller
         return back();
     }
 
-    public function qrCode(Event $event): Response
+    public function qrCode(Event $event)
     {
         $this->authorizeEvent($event);
 
-        $svg = QrCode::format('svg')
-            ->size(300)
-            ->errorCorrection('H')
-            ->generate($event->invitationUrl());
+        $url = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&data='
+             . urlencode($event->invitationUrl());
 
-        return response($svg, 200, [
-            'Content-Type'        => 'image/svg+xml',
-            'Content-Disposition' => 'inline; filename="qr-' . $event->id . '.svg"',
-        ]);
+        return redirect($url);
     }
 
     public function exportRsvp(Event $event): \Symfony\Component\HttpFoundation\StreamedResponse

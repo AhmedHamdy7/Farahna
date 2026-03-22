@@ -60,6 +60,11 @@ Route::domain('{subdomain}.' . parse_url(config('app.url'), PHP_URL_HOST))
             return app(WishController::class)->store($request, $event);
         })->name('invitation.wishes.subdomain');
 
+        Route::get('/wishes/latest', function (string $subdomain, \Illuminate\Http\Request $request) {
+            $event = Event::where('subdomain', $subdomain)->firstOrFail();
+            return app(WishController::class)->latest($request, $event);
+        })->name('invitation.wishes.latest.subdomain');
+
         Route::post('/rsvp', function (string $subdomain, \Illuminate\Http\Request $request) {
             $event = Event::where('subdomain', $subdomain)->firstOrFail();
             return app(RsvpController::class)->store($request, $event);
@@ -69,6 +74,7 @@ Route::domain('{subdomain}.' . parse_url(config('app.url'), PHP_URL_HOST))
 // ─── INVITATION (Local /i/{event}) ────────────────────────────────────────────
 Route::prefix('i')->name('invitation.')->group(function () {
     Route::match(['GET','POST'], '/{event}', [InvitationController::class, 'show'])->middleware(InvitationPasswordMiddleware::class)->name('show');
-    Route::post('/{event}/wishes',[WishController::class, 'store'])->name('wishes');
-    Route::post('/{event}/rsvp',  [RsvpController::class, 'store'])->name('rsvp');
+    Route::post('/{event}/wishes',      [WishController::class, 'store'])->name('wishes');
+    Route::get('/{event}/wishes/latest',[WishController::class, 'latest'])->name('wishes.latest');
+    Route::post('/{event}/rsvp',        [RsvpController::class, 'store'])->name('rsvp');
 });
